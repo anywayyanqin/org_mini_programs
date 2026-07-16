@@ -20,7 +20,7 @@ export default function RoleSelectorModal({ currentRole, onSelectRole, onClose, 
         <div className="p-5 border-b border-[var(--bl)] flex items-center justify-between">
           <div>
             <h2 className="text-[16px] font-bold text-[var(--tm)]">切换身份</h2>
-            <p className="text-[12px] text-[var(--tt)] mt-1">选择最符合您需求的视图与权限</p>
+            <p className="text-[12px] text-[var(--tt)] mt-1">切换后将展示对应身份的服务与权益</p>
           </div>
           <button 
             onClick={onClose}

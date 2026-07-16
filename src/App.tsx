@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Bell, Home, FileText, Users, BarChart2, Tv, User, X, ArrowRightLeft, LogIn } from 'lucide-react';
+import { Search, Bell, Home, FileText, Users, BarChart2, Tv, User, X, ArrowRightLeft, LogIn, BadgeCheck } from 'lucide-react';
 import { futuresData } from './data';
 import HomePage from './components/HomePage';
 import LoginModal from './components/LoginModal';
@@ -9,6 +9,7 @@ import MessageCenterModal from './components/MessageCenterModal';
 import { ContentAccessPrompt, ContentPreview, type ProtectedContent } from './components/ProtectedContentModals';
 
 export default function App() {
+  const isMissingProfileDemo = new URLSearchParams(window.location.search).get('profile') === 'missing';
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState('机构身份');
   const [showRoleModal, setShowRoleModal] = useState(false);
@@ -19,13 +20,22 @@ export default function App() {
   
   const getUserDisplayName = () => {
     if (!isLoggedIn) return '游客';
+    if (isMissingProfileDemo) return '';
     return userRole === '机构身份' ? '国泰君安期货有限公司' : '王燕勤';
   };
 
   const getRoleDisplayName = () => {
     if (!isLoggedIn) return '未登录';
+    if (isMissingProfileDemo) return '';
     return '王燕勤';
   };
+
+  const getHeaderIdentityFullName = () => {
+    if (isMissingProfileDemo) return '暂未关联机构';
+    return userRole === '机构身份' ? '国泰君安期货有限公司' : '国泰海通证券有限公司';
+  };
+
+  const isCurrentIdentitySigned = isLoggedIn && userRole === '机构身份' && !isMissingProfileDemo;
 
   const handleUserClick = () => {
     if (!isLoggedIn) {
@@ -33,6 +43,7 @@ export default function App() {
     } else {
       setShowRoleModal(true);
     }
+
   };
 
   const handleOpenProtectedContent = (content: ProtectedContent) => {
@@ -56,6 +67,14 @@ export default function App() {
     const iconSize = size === 'small' ? 14 : 16;
 
     if (!isLoggedIn) {
+      return (
+        <div className={`${pxSize} rounded-full flex items-center justify-center shrink-0 bg-white text-[var(--ts)]`}>
+          <User size={iconSize} />
+        </div>
+      );
+    }
+
+    if (isMissingProfileDemo) {
       return (
         <div className={`${pxSize} rounded-full flex items-center justify-center shrink-0 bg-white text-[var(--ts)]`}>
           <User size={iconSize} />
@@ -130,8 +149,8 @@ export default function App() {
           >
             {renderAvatar('large')}
             <div className="flex flex-col flex-1 min-w-0">
-              <span className="text-[13px] font-medium text-[var(--tm)] truncate">{getUserDisplayName()}</span>
-              <span className={`text-[11px] truncate font-semibold ${isLoggedIn ? 'text-[var(--p)]' : 'text-[var(--ts)]'}`}>{getRoleDisplayName()}</span>
+              <span className="text-[13px] font-medium text-[var(--tm)] truncate">{getUserDisplayName() || '暂未关联机构'}</span>
+              <span className={`text-[11px] truncate font-semibold ${isLoggedIn ? 'text-[var(--p)]' : 'text-[var(--ts)]'}`}>{getRoleDisplayName() || '用户 · 尾号5848'}</span>
             </div>
             {isLoggedIn ? <ArrowRightLeft size={14} className="text-[var(--ts)] shrink-0" /> : <LogIn size={14} className="text-[var(--ts)] shrink-0" />}
           </button>
@@ -144,14 +163,25 @@ export default function App() {
         <header className="h-[56px] bg-[var(--bc)] border-b border-[var(--bl)] flex items-center px-3 md:px-5 shrink-0 gap-3">
           <button
             onClick={handleUserClick}
-            aria-label={isLoggedIn ? '切换身份' : '登录并选择身份'}
-            title={isLoggedIn ? '切换身份' : '登录并选择身份'}
-            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg bg-[var(--pl)] text-[var(--p)] border border-[var(--bl)] active:bg-[var(--bh)] transition-colors shrink-0"
+            aria-label={isLoggedIn ? `${getHeaderIdentityFullName()}，${isCurrentIdentitySigned ? '已签约' : '未签约'}，切换身份` : '登录并选择身份'}
+            title={isLoggedIn ? '点击切换身份' : '登录并选择身份'}
+            className="md:hidden relative h-9 w-9 flex items-center justify-center rounded-lg bg-[var(--pl)] text-[var(--p)] border border-transparent active:bg-[var(--bh)] active:scale-[0.96] transition-[background-color,transform] shrink-0"
           >
-            {isLoggedIn ? <ArrowRightLeft size={18} /> : <User size={18} />}
+            {isLoggedIn ? (
+              <>
+                <span className="text-[11px] font-bold whitespace-nowrap">国泰</span>
+                {isCurrentIdentitySigned && (
+                  <span className="absolute -right-1 -bottom-1 w-[17px] h-[17px] rounded-full bg-[var(--bc)] border border-[var(--bl)] flex items-center justify-center shadow-sm" aria-hidden="true">
+                    <BadgeCheck size={12} className="text-[#B25F2A]" />
+                  </span>
+                )}
+              </>
+            ) : (
+              <LogIn size={14} className="text-[var(--p)] shrink-0" aria-hidden="true" />
+            )}
           </button>
           
-          <div className="flex-1 min-w-[120px] max-w-[400px] relative">
+          <div className="flex-1 min-w-0 md:min-w-[120px] max-w-[400px] relative">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--tt)]" />
             <input 
               type="text" 
@@ -207,6 +237,7 @@ export default function App() {
               renderAvatar={renderAvatar}
               onLoginClick={() => setShowLoginModal(true)}
               onSwitchRole={() => setShowRoleModal(true)}
+              isProfileIncomplete={isMissingProfileDemo}
             />
           )}
           {activeTab !== 'home' && activeTab !== 'my' && (

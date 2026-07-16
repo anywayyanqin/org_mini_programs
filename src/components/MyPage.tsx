@@ -12,6 +12,7 @@ interface MyPageProps {
   renderAvatar: (size: 'small' | 'large') => React.ReactNode;
   onLoginClick: () => void;
   onSwitchRole: () => void;
+  isProfileIncomplete?: boolean;
 }
 
 export default function MyPage({ 
@@ -21,14 +22,20 @@ export default function MyPage({
   getRoleDisplayName, 
   renderAvatar,
   onLoginClick,
-  onSwitchRole
+  onSwitchRole,
+  isProfileIncomplete = false
 }: MyPageProps) {
   const isInstitution = userRole === '机构身份';
-  const identityName = isInstitution ? getUserDisplayName() : '国泰海通证券有限公司';
+  const rawDisplayName = isProfileIncomplete ? '' : getRoleDisplayName().trim();
+  const rawIdentityName = isProfileIncomplete ? '' : (isInstitution ? getUserDisplayName() : '国泰海通证券有限公司').trim();
+  const displayName = rawDisplayName || '用户 · 尾号5848';
+  const identityName = rawIdentityName || '暂未关联机构';
+  const hasCompleteInstitution = Boolean(rawIdentityName);
+  const showSignedInstitution = isInstitution && hasCompleteInstitution;
   const [activeSubPage, setActiveSubPage] = useState<'main' | 'benefits' | 'orders' | 'info'>('main');
 
   if (activeSubPage === 'info') {
-    return <MyInfoPage onBack={() => setActiveSubPage('main')} userRole={userRole} />;
+    return <MyInfoPage onBack={() => setActiveSubPage('main')} userRole={userRole} isProfileIncomplete={isProfileIncomplete} />;
   }
 
   if (activeSubPage === 'benefits') {
@@ -61,18 +68,19 @@ export default function MyPage({
               {isLoggedIn ? (
                 <>
                   <div className="flex items-center gap-2 mb-1">
-                    <h2 className="text-[19px] font-bold text-[var(--tm)] truncate">{getRoleDisplayName()}</h2>
-                    {isInstitution && (
+                    <h2 className="text-[19px] font-bold text-[var(--tm)] truncate">{displayName}</h2>
+                    {showSignedInstitution && (
                       <div className="flex items-center text-[#B25F2A] text-[10px] rounded overflow-hidden leading-none shrink-0 h-[18px]">
                         <span className="bg-[#EFCFB2] px-1.5 h-full flex items-center font-medium">企</span>
                         <span className="bg-[#FCE6D3] px-1.5 h-full flex items-center">已签约</span>
                       </div>
                     )}
                   </div>
-                  <div className="text-[12px] text-[var(--tt)] flex items-center gap-1 min-w-0">
-                    <span className="shrink-0">{isInstitution ? '机构身份' : '零售身份'}</span>
-                    <span aria-hidden="true">·</span>
+                  <div className="text-[12px] text-[var(--tt)] min-w-0 flex items-center">
                     <span className="truncate">{identityName}</span>
+                    {!hasCompleteInstitution && (
+                      <span className="ml-2 text-[var(--p)] font-medium shrink-0">完善资料</span>
+                    )}
                   </div>
                 </>
               ) : (
@@ -107,7 +115,7 @@ export default function MyPage({
         </div>
 
         {/* Institution Status Card */}
-        {isLoggedIn && isInstitution && (
+        {isLoggedIn && showSignedInstitution && (
           <div className="mt-6 bg-gradient-to-r from-[#FCE6D3] to-[#F5D4B5] rounded-xl p-4 flex items-center justify-between">
             <div>
               <h3 className="font-bold text-[#8A4A1C] text-[15px] mb-1">机构专属服务已激活</h3>

@@ -4,9 +4,10 @@ import { ChevronLeft } from 'lucide-react';
 interface MyInfoPageProps {
   onBack: () => void;
   userRole: string;
+  isProfileIncomplete?: boolean;
 }
 
-export default function MyInfoPage({ onBack, userRole }: MyInfoPageProps) {
+export default function MyInfoPage({ onBack, userRole, isProfileIncomplete = false }: MyInfoPageProps) {
   const [managerId, setManagerId] = useState('');
   const isInstitution = userRole === '机构身份';
 
@@ -16,23 +17,13 @@ export default function MyInfoPage({ onBack, userRole }: MyInfoPageProps) {
       <div className="bg-[#E23838] shrink-0 h-[56px] px-4 flex items-center relative select-none">
         <button 
           onClick={onBack}
+          aria-label="返回"
+          title="返回"
           className="absolute left-4 w-8 h-8 rounded-full flex items-center justify-center active:scale-95 transition-all text-white"
         >
           <ChevronLeft size={28} strokeWidth={2} className="-ml-1" />
         </button>
         <h1 className="flex-1 text-center text-[17px] font-bold text-white">我的信息</h1>
-        {/* Fake Mini Program Capsule */}
-        <div className="absolute right-4 w-[80px] h-[30px] rounded-full border border-white/25 bg-black/10 flex items-center justify-between px-3">
-          <div className="flex gap-1">
-            <div className="w-1 h-1 rounded-full bg-white"></div>
-            <div className="w-1 h-1 rounded-full bg-white"></div>
-            <div className="w-1 h-1 rounded-full bg-white"></div>
-          </div>
-          <div className="w-[1px] h-4 bg-white/20"></div>
-          <div className="w-4 h-4 rounded-full border-[1.5px] border-white flex items-center justify-center">
-            <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
-          </div>
-        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
@@ -45,7 +36,7 @@ export default function MyInfoPage({ onBack, userRole }: MyInfoPageProps) {
           <div className="px-4">
             <div className="flex justify-between items-center py-4 border-b border-[#F0F0F0]">
               <span className="text-[14px] text-[#333]">机构名称</span>
-              <span className="text-[14px] text-[#999]">{isInstitution ? '国泰君安期货有限公司' : '国泰海通证券有限公司'}</span>
+              <span className="text-[14px] text-[#999]">{isProfileIncomplete ? '未填写' : (isInstitution ? '国泰君安期货有限公司' : '国泰海通证券有限公司')}</span>
             </div>
             <div className="flex justify-between items-center py-4 border-b border-[#F0F0F0]">
               <span className="text-[14px] text-[#333]">机构类型</span>
@@ -71,7 +62,7 @@ export default function MyInfoPage({ onBack, userRole }: MyInfoPageProps) {
           <div className="px-4">
             <div className="flex justify-between items-center py-4 border-b border-[#F0F0F0]">
               <span className="text-[14px] text-[#333]">姓名</span>
-              <span className="text-[14px] text-[#999]">王**</span>
+              <span className="text-[14px] text-[#999]">{isProfileIncomplete ? '未填写' : '王**'}</span>
             </div>
             <div className="flex justify-between items-center py-4 border-b border-[#F0F0F0]">
               <span className="text-[14px] text-[#333]">手机号</span>
@@ -86,7 +77,7 @@ export default function MyInfoPage({ onBack, userRole }: MyInfoPageProps) {
 
         <div className="px-1 py-2">
           <p className="text-[12px] text-[#D47E3B] leading-relaxed">
-            “我的信息”中资料如需修改，请至机构服务平台网页版(https://inst.citicsf.com)修改，或联系专属客户经理。
+            “我的信息”中资料如需修改，请至机构服务平台网页版(vip.gtjaqh.com)修改，或联系专属客户经理。
           </p>
         </div>
       </div>

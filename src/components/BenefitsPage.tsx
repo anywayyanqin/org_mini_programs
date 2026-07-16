@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Share2, AlertCircle, CircleCheck } from 'lucide-react';
+import { ArrowLeft, Share2, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface BenefitsPageProps {
@@ -192,8 +192,8 @@ export default function BenefitsPage({ onBack }: BenefitsPageProps) {
               onClick={() => setExpandedItemId(expandedItemId === item.id ? null : item.id)}
               className="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex flex-col relative z-10 transition-all hover:shadow-md cursor-pointer"
             >
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-start gap-3">
+              <div className="flex items-start">
+                <div className="flex items-start gap-3 flex-1 min-w-0">
                   <div className="w-8 h-8 rounded-lg bg-[#F2F6FF] text-[#2B65D9] flex items-center justify-center shrink-0 mt-0.5">
                     <Share2 size={16} />
                   </div>
@@ -212,10 +212,6 @@ export default function BenefitsPage({ onBack }: BenefitsPageProps) {
                   </div>
                 </div>
 
-                <div className="shrink-0 flex items-center gap-1.5 rounded-full bg-[#F0FFF4] px-3 py-1.5 text-[12px] font-medium text-[var(--ok)]">
-                  <CircleCheck size={14} />
-                  使用中
-                </div>
               </div>
 
               {/* Expandable Details */}
