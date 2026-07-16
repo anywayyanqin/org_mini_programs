@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { User, ChevronRight, Star, Clock, Download, Bell, Settings, HelpCircle, Phone, ArrowRightLeft, LogIn, LogOut } from 'lucide-react';
 import BenefitsPage from './BenefitsPage';
 import OrdersPage from './OrdersPage';
+import MyInfoPage from './MyInfoPage';
 
 interface MyPageProps {
   isLoggedIn: boolean;
@@ -23,7 +24,11 @@ export default function MyPage({
   onSwitchRole
 }: MyPageProps) {
   const isInstitution = userRole === '机构身份';
-  const [activeSubPage, setActiveSubPage] = useState<'main' | 'benefits' | 'orders'>('main');
+  const [activeSubPage, setActiveSubPage] = useState<'main' | 'benefits' | 'orders' | 'info'>('main');
+
+  if (activeSubPage === 'info') {
+    return <MyInfoPage onBack={() => setActiveSubPage('main')} userRole={userRole} />;
+  }
 
   if (activeSubPage === 'benefits') {
     return <BenefitsPage onBack={() => setActiveSubPage('main')} />;
@@ -38,31 +43,42 @@ export default function MyPage({
       {/* Header Profile Section */}
       <div className="bg-[var(--bc)] p-6 pt-10 border-b border-[var(--bl)]">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-[var(--bb)] flex items-center justify-center shrink-0 shadow-sm border border-[var(--bl)]">
-            {renderAvatar('large')}
-          </div>
-          <div className="flex-1 min-w-0 flex flex-col justify-center">
-            {isLoggedIn ? (
-              <>
-                <div className="flex items-center gap-2 mb-1.5">
-                  <h2 className="text-xl font-bold text-[var(--tm)] truncate">{getUserDisplayName()}</h2>
-                  {isInstitution && (
-                    <div className="flex items-center text-[#B25F2A] text-[10px] rounded overflow-hidden leading-none shrink-0 h-[18px]">
-                      <span className="bg-[#EFCFB2] px-1.5 h-full flex items-center font-medium">企</span>
-                      <span className="bg-[#FCE6D3] px-1.5 h-full flex items-center">已签约</span>
-                    </div>
-                  )}
-                </div>
-                <div className="text-[13px] text-[var(--tt)] flex items-center gap-1">
-                  <span>{getRoleDisplayName()}</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <h2 className="text-xl font-bold text-[var(--tm)] mb-1">未登录</h2>
-                <p className="text-[13px] text-[var(--tt)]">点击登录获取专属服务</p>
-              </>
-            )}
+          <div 
+            className="flex items-center gap-4 flex-1 cursor-pointer" 
+            onClick={() => {
+              if (isLoggedIn) {
+                setActiveSubPage('info');
+              } else {
+                onLoginClick();
+              }
+            }}
+          >
+            <div className="w-16 h-16 rounded-full bg-[var(--bb)] flex items-center justify-center shrink-0 shadow-sm border border-[var(--bl)]">
+              {renderAvatar('large')}
+            </div>
+            <div className="flex-1 min-w-0 flex flex-col justify-center">
+              {isLoggedIn ? (
+                <>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <h2 className="text-xl font-bold text-[var(--tm)] truncate">{getUserDisplayName()}</h2>
+                    {isInstitution && (
+                      <div className="flex items-center text-[#B25F2A] text-[10px] rounded overflow-hidden leading-none shrink-0 h-[18px]">
+                        <span className="bg-[#EFCFB2] px-1.5 h-full flex items-center font-medium">企</span>
+                        <span className="bg-[#FCE6D3] px-1.5 h-full flex items-center">已签约</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-[13px] text-[var(--tt)] flex items-center gap-1">
+                    <span>{getRoleDisplayName()}</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h2 className="text-xl font-bold text-[var(--tm)] mb-1">未登录</h2>
+                  <p className="text-[13px] text-[var(--tt)]">点击登录获取专属服务</p>
+                </>
+              )}
+            </div>
           </div>
           
           <div className="shrink-0 ml-4">
@@ -104,6 +120,7 @@ export default function MyPage({
         {/* Block 1 */}
         <div className="bg-[var(--bc)] rounded-2xl shadow-sm border border-[var(--bl)] overflow-hidden">
           {[
+            { iconText: '信', label: '我的信息' },
             { iconText: '权', label: '我的权益' },
             { iconText: '单', label: '我的订单' },
             { iconText: '客', label: '金牌客服' },
@@ -113,7 +130,9 @@ export default function MyPage({
             <div 
               key={i} 
               onClick={() => {
-                if (item.label === '我的权益') {
+                if (item.label === '我的信息') {
+                  setActiveSubPage('info');
+                } else if (item.label === '我的权益') {
                   setActiveSubPage('benefits');
                 } else if (item.label === '我的订单') {
                   setActiveSubPage('orders');
