@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ShieldCheck } from 'lucide-react';
 import { followData, researchersData, heatmapData } from '../data';
+import type { ProtectedContent } from './ProtectedContentModals';
 
 interface HomePageProps {
   onOpenResearcher: (name: string) => void;
+  onOpenProtectedContent: (content: ProtectedContent) => void;
 }
 
-export default function HomePage({ onOpenResearcher }: HomePageProps) {
+export default function HomePage({ onOpenResearcher, onOpenProtectedContent }: HomePageProps) {
   const [heatmapTab, setHeatmapTab] = useState<'chg' | 'vol'>('chg');
   const [strategyFilter, setStrategyFilter] = useState('全部品种');
 
@@ -152,8 +154,15 @@ export default function HomePage({ onOpenResearcher }: HomePageProps) {
             { n: '沪银', s1: '看涨', c1: 'text-[var(--er)]', s2: '+3.12%', c2: 'text-[var(--er)]' },
             { n: '原油', s1: '看跌', c1: 'text-[var(--ok)]', s2: '-1.2%', c2: 'text-[var(--ok)]' }
           ].map((s, i) => (
-            <div key={i} className="min-w-[130px] max-w-[140px] md:max-w-none md:min-w-0 shrink-0 snap-start bg-[var(--bb)] rounded-[var(--rm)] p-2.5 md:p-3">
-              <div className="text-[10px] md:text-[11px] text-[var(--tt)] mb-0.5">品种</div>
+            <button
+              key={i}
+              onClick={() => onOpenProtectedContent({ kind: '策略', title: `${s.n}基本面周度策略` })}
+              className="min-w-[130px] max-w-[140px] md:max-w-none md:min-w-0 shrink-0 snap-start bg-[var(--bb)] rounded-[var(--rm)] p-2.5 md:p-3 text-left transition-colors hover:bg-[var(--bh)]"
+            >
+              <div className="mb-1 flex items-center justify-between gap-2">
+                <div className="text-[10px] md:text-[11px] text-[var(--tt)]">品种</div>
+                <span className="flex items-center gap-0.5 text-[9px] text-[var(--p)]"><ShieldCheck size={10} />机构</span>
+              </div>
               <div className="text-[13px] md:text-[14px] font-semibold">{s.n}</div>
               <div className="mt-1.5 md:mt-2">
                 <div className="text-[10px] md:text-[11px] text-[var(--tt)]">周度信号</div>
@@ -163,7 +172,7 @@ export default function HomePage({ onOpenResearcher }: HomePageProps) {
                 <div className="text-[10px] md:text-[11px] text-[var(--tt)]">周度涨跌幅</div>
                 <div className={`text-[12px] md:text-[13px] font-semibold ${s.c2}`}>{s.s2}</div>
               </div>
-            </div>
+            </button>
           ))}
         </div>
         <div className="mt-2.5 flex gap-2 flex-wrap items-center">
@@ -254,16 +263,23 @@ export default function HomePage({ onOpenResearcher }: HomePageProps) {
                 { tag: '热', tagC: 'bg-[#FFF1F0] text-[var(--er)]', title: '商品期货市场季度策略展望', team: '策略团队', date: '06-23' },
                 { tag: '新', tagC: 'bg-[#E6F0FF] text-[var(--p)]', title: '股指期货多因子模型最新研究成果', team: '金工团队', date: '06-22' }
               ].map((r, i) => (
-                <div key={i} className={`flex items-start gap-2 py-2 ${i > 0 ? 'border-t border-[var(--bl)]' : ''}`}>
+                <button
+                  key={i}
+                  onClick={() => onOpenProtectedContent({ kind: '研报', title: r.title })}
+                  className={`flex w-full items-start gap-2 py-2 text-left transition-colors hover:bg-[var(--pll)] ${i > 0 ? 'border-t border-[var(--bl)]' : ''}`}
+                >
                   <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${r.tagC}`}>{r.tag}</span>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[12px] font-medium mb-0.5 leading-[1.4]">{r.title}</div>
+                    <div className="flex items-start gap-1.5 text-[12px] font-medium mb-0.5 leading-[1.4]">
+                      <span className="flex-1">{r.title}</span>
+                      <ShieldCheck size={12} className="mt-0.5 shrink-0 text-[var(--p)]" />
+                    </div>
                     <div className="text-[10px] text-[var(--tt)] flex gap-2">
                       <span>{r.team}</span>
                       <span>{r.date}</span>
                     </div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -275,16 +291,23 @@ export default function HomePage({ onOpenResearcher }: HomePageProps) {
                 { tag: '新', tagC: 'bg-[#F0FFF0] text-[var(--ok)]', title: '能化产业链深度调研报告', team: '能化团队', date: '06-23' },
                 { tag: '精', tagC: 'bg-[#E6F0FF] text-[var(--p)]', title: '黑色系供需格局与价格展望', team: '黑色团队', date: '06-22' }
               ].map((r, i) => (
-                <div key={i} className={`flex items-start gap-2 py-2 ${i > 0 ? 'border-t border-[var(--bl)]' : ''}`}>
+                <button
+                  key={i}
+                  onClick={() => onOpenProtectedContent({ kind: '研报', title: r.title })}
+                  className={`flex w-full items-start gap-2 py-2 text-left transition-colors hover:bg-[var(--pll)] ${i > 0 ? 'border-t border-[var(--bl)]' : ''}`}
+                >
                   <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${r.tagC}`}>{r.tag}</span>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[12px] font-medium mb-0.5 leading-[1.4]">{r.title}</div>
+                    <div className="flex items-start gap-1.5 text-[12px] font-medium mb-0.5 leading-[1.4]">
+                      <span className="flex-1">{r.title}</span>
+                      <ShieldCheck size={12} className="mt-0.5 shrink-0 text-[var(--p)]" />
+                    </div>
                     <div className="text-[10px] text-[var(--tt)] flex gap-2">
                       <span>{r.team}</span>
                       <span>{r.date}</span>
                     </div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>

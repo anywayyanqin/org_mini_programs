@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Share2, Calendar, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Share2, AlertCircle, CircleCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface BenefitsPageProps {
@@ -212,16 +212,10 @@ export default function BenefitsPage({ onBack }: BenefitsPageProps) {
                   </div>
                 </div>
 
-                {/* Renew Button */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    // Handle renew logic here if needed
-                  }}
-                  className="shrink-0 px-6 py-2 text-[13px] font-medium text-white bg-[#2B65D9] hover:bg-[#1E4EB0] active:scale-95 transition-all rounded-lg shadow-sm"
-                >
-                  立刻续费
-                </button>
+                <div className="shrink-0 flex items-center gap-1.5 rounded-full bg-[#F0FFF4] px-3 py-1.5 text-[12px] font-medium text-[var(--ok)]">
+                  <CircleCheck size={14} />
+                  使用中
+                </div>
               </div>
 
               {/* Expandable Details */}

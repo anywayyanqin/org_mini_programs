@@ -6,6 +6,7 @@ import LoginModal from './components/LoginModal';
 import RoleSelectorModal from './components/RoleSelectorModal';
 import MyPage from './components/MyPage';
 import MessageCenterModal from './components/MessageCenterModal';
+import { ContentAccessPrompt, ContentPreview, type ProtectedContent } from './components/ProtectedContentModals';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -13,6 +14,8 @@ export default function App() {
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showMessageModal, setShowMessageModal] = useState(false);
+  const [pendingContent, setPendingContent] = useState<ProtectedContent | null>(null);
+  const [openedContent, setOpenedContent] = useState<ProtectedContent | null>(null);
   
   const getUserDisplayName = () => {
     if (!isLoggedIn) return '游客';
@@ -30,6 +33,21 @@ export default function App() {
     } else {
       setShowRoleModal(true);
     }
+  };
+
+  const handleOpenProtectedContent = (content: ProtectedContent) => {
+    if (!isLoggedIn) {
+      setPendingContent(content);
+      setShowLoginModal(true);
+      return;
+    }
+
+    if (userRole !== '机构身份') {
+      setPendingContent(content);
+      return;
+    }
+
+    setOpenedContent(content);
   };
 
   const renderAvatar = (size: 'small' | 'large') => {
@@ -125,12 +143,12 @@ export default function App() {
         {/* Topbar */}
         <header className="h-[56px] bg-[var(--bc)] border-b border-[var(--bl)] flex items-center px-3 md:px-5 shrink-0 gap-3">
           <button
-            onClick={() => setActiveTab('home')}
-            aria-label="返回首页"
-            title="返回首页"
-            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg bg-[var(--p)] text-white font-bold text-[14px] shadow-sm active:bg-[var(--ph)] transition-colors shrink-0"
+            onClick={handleUserClick}
+            aria-label={isLoggedIn ? '切换身份' : '登录并选择身份'}
+            title={isLoggedIn ? '切换身份' : '登录并选择身份'}
+            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg bg-[var(--pl)] text-[var(--p)] border border-[var(--bl)] active:bg-[var(--bh)] transition-colors shrink-0"
           >
-            君
+            {isLoggedIn ? <ArrowRightLeft size={18} /> : <User size={18} />}
           </button>
           
           <div className="flex-1 min-w-[120px] max-w-[400px] relative">
@@ -174,7 +192,12 @@ export default function App() {
 
         {/* Frame Content */}
         <div className="flex-1 overflow-auto bg-[var(--bb)] md:pb-0 pb-[56px] relative z-0">
-          {activeTab === 'home' && <HomePage onOpenResearcher={(name) => setResearcherPanel({ isOpen: true, title: name })} />}
+          {activeTab === 'home' && (
+            <HomePage
+              onOpenResearcher={(name) => setResearcherPanel({ isOpen: true, title: name })}
+              onOpenProtectedContent={handleOpenProtectedContent}
+            />
+          )}
           {activeTab === 'my' && (
             <MyPage 
               isLoggedIn={isLoggedIn}
@@ -254,9 +277,34 @@ export default function App() {
           onLogin={() => {
             setIsLoggedIn(true);
             setShowLoginModal(false);
+            if (pendingContent) {
+              if (userRole === '机构身份') {
+                setOpenedContent(pendingContent);
+                setPendingContent(null);
+              }
+            }
           }}
-          onClose={() => setShowLoginModal(false)}
+          onClose={() => {
+            setShowLoginModal(false);
+            setPendingContent(null);
+          }}
         />
+      )}
+
+      {pendingContent && isLoggedIn && userRole !== '机构身份' && (
+        <ContentAccessPrompt
+          content={pendingContent}
+          onClose={() => setPendingContent(null)}
+          onSwitchAndOpen={() => {
+            setUserRole('机构身份');
+            setOpenedContent(pendingContent);
+            setPendingContent(null);
+          }}
+        />
+      )}
+
+      {openedContent && (
+        <ContentPreview content={openedContent} onClose={() => setOpenedContent(null)} />
       )}
 
       {/* Message Center Modal */}
