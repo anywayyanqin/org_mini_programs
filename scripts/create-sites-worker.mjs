@@ -1,4 +1,8 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { cp, mkdir, writeFile } from "node:fs/promises";
+
+await mkdir("dist/client", { recursive: true });
+await cp("dist/index.html", "dist/client/index.html");
+await cp("dist/assets", "dist/client/assets", { recursive: true });
 
 const worker = `export default {
   async fetch(request, env) {
