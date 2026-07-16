@@ -2,27 +2,44 @@
 
 final result: passed
 
-Source URL: http://localhost:3002/
-Replica URL: http://localhost:3002/replica.html
+Source visual truth: /tmp/codex-remote-attachments/019f6893-887a-73d2-8cc1-849737495d4f/CB6231F7-2C36-4B85-9D5D-4CB0A2F98330/1-Photo-1.jpg
+Implementation screenshot: /tmp/org-mini-profile-mobile.png
+Role sheet screenshot: /tmp/org-mini-role-sheet-mobile.png
+Full-view comparison: /tmp/org-mini-full-comparison.png
+Focused comparison: /tmp/org-mini-profile-focus-comparison.png
+Viewport: 390 x 844
+State: mobile, logged in, institution identity, My tab
 
-## Scope
+## Findings
 
-- Faithfully replicate the existing local page without changing the current visual system.
-- Preserve the existing React app, styling, layout density, colors, typography, navigation, and modal behavior.
+- No actionable P0/P1/P2 issues remain.
+- The top-left control now represents the product brand and returns to Home, so personal information appears only in the profile region.
+- The profile hierarchy now leads with the person's name and shows the active identity and institution as supporting context.
+- The identity switch control fits the narrow header without compressing the profile text, and its icon plus short label remains understandable on touch devices.
+- The mobile identity selector opens as a bottom sheet and keeps both identity options and logout action visible.
 
-## Evidence Checked
+## Fidelity Surfaces
 
-- Desktop source capture: sidebar, top search, ticker bar, hero banner, follow cards, researcher row, heatmap, strategy cards.
-- Mobile source capture at 390 x 844: top controls, ticker, hero, horizontal content cards, bottom tab bar.
-- Replica desktop capture: matching app shell, page title, sidebar labels, hero text, and no horizontal overflow.
-- Replica mobile capture at 390 x 844: matching bottom tabs, home content, and no horizontal overflow.
+- Typography: existing system font, weights, and hierarchy are preserved; the personal name is the primary heading and supporting identity text truncates safely.
+- Spacing and layout: the 390 px viewport has no horizontal overflow or clipped controls; profile, status panel, menu list, and bottom navigation retain their rhythm.
+- Colors and tokens: existing blue, neutral, and institution gold tokens are unchanged; the new brand control uses the existing primary token.
+- Image quality and assets: no new raster assets were required; existing avatar treatment and Lucide interface icons remain sharp.
+- Copy and content: "王燕勤" is primary, while "机构身份 · 国泰君安期货有限公司" supplies the non-duplicated account context.
 
 ## Interaction Checks
 
-- Bottom navigation switches to "我的" and back to "首页".
-- Message bell opens the "消息盒子" modal.
-- Message modal closes from the backdrop.
+- Opened My from the bottom navigation.
+- Completed one-click login and reached the institution profile state.
+- Opened the identity switch bottom sheet.
+- Verified the bottom navigation remains visible and usable.
+- Checked browser console errors: none.
 
-## Notes
+## Comparison History
 
-- The replica entry intentionally loads the same React bundle as the source page. This keeps the clone visually and behaviorally identical while avoiding any changes to the existing styles or components.
+- Initial source issue: the top-left avatar duplicated the profile identity and the horizontal switch pill crowded the organization name.
+- Fix: replaced the mobile avatar with a brand Home control, reordered the profile content, compacted the switch action, and moved the mobile selector to a bottom sheet.
+- Post-fix evidence: full-view and focused comparison images show a single personal-information region with stable spacing and an unobstructed switch control.
+
+## Follow-up Polish
+
+- No blocking polish items remain for this scope.

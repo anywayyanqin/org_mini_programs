@@ -15,8 +15,8 @@ export default function RoleSelectorModal({ currentRole, onSelectRole, onClose, 
   ];
 
   return (
-    <div className="fixed inset-0 bg-black/45 z-[10000] flex items-center justify-center p-4 animate-[rpFadeIn_0.2s]">
-      <div className="bg-[var(--bc)] w-full max-w-[400px] rounded-2xl shadow-xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/45 z-[10000] flex items-end md:items-center justify-center md:p-4 animate-[rpFadeIn_0.2s]">
+      <div className="bg-[var(--bc)] w-full max-w-[400px] rounded-t-2xl md:rounded-2xl shadow-xl overflow-hidden flex flex-col animate-[slideUp_0.24s_ease-out] md:animate-none pb-[env(safe-area-inset-bottom)]">
         <div className="p-5 border-b border-[var(--bl)] flex items-center justify-between">
           <div>
             <h2 className="text-[16px] font-bold text-[var(--tm)]">切换身份</h2>

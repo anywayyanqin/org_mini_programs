@@ -24,6 +24,7 @@ export default function MyPage({
   onSwitchRole
 }: MyPageProps) {
   const isInstitution = userRole === '机构身份';
+  const identityName = isInstitution ? getUserDisplayName() : '国泰海通证券有限公司';
   const [activeSubPage, setActiveSubPage] = useState<'main' | 'benefits' | 'orders' | 'info'>('main');
 
   if (activeSubPage === 'info') {
@@ -41,10 +42,10 @@ export default function MyPage({
   return (
     <div className="flex-1 overflow-auto bg-[var(--bb)] h-full pb-6">
       {/* Header Profile Section */}
-      <div className="bg-[var(--bc)] p-6 pt-10 border-b border-[var(--bl)]">
-        <div className="flex items-center gap-4">
+      <div className="bg-[var(--bc)] px-5 py-7 md:p-6 md:pt-10 border-b border-[var(--bl)]">
+        <div className="flex items-center gap-3">
           <div 
-            className="flex items-center gap-4 flex-1 cursor-pointer" 
+            className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer" 
             onClick={() => {
               if (isLoggedIn) {
                 setActiveSubPage('info');
@@ -59,8 +60,8 @@ export default function MyPage({
             <div className="flex-1 min-w-0 flex flex-col justify-center">
               {isLoggedIn ? (
                 <>
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <h2 className="text-xl font-bold text-[var(--tm)] truncate">{getUserDisplayName()}</h2>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h2 className="text-[19px] font-bold text-[var(--tm)] truncate">{getRoleDisplayName()}</h2>
                     {isInstitution && (
                       <div className="flex items-center text-[#B25F2A] text-[10px] rounded overflow-hidden leading-none shrink-0 h-[18px]">
                         <span className="bg-[#EFCFB2] px-1.5 h-full flex items-center font-medium">企</span>
@@ -68,8 +69,10 @@ export default function MyPage({
                       </div>
                     )}
                   </div>
-                  <div className="text-[13px] text-[var(--tt)] flex items-center gap-1">
-                    <span>{getRoleDisplayName()}</span>
+                  <div className="text-[12px] text-[var(--tt)] flex items-center gap-1 min-w-0">
+                    <span className="shrink-0">{isInstitution ? '机构身份' : '零售身份'}</span>
+                    <span aria-hidden="true">·</span>
+                    <span className="truncate">{identityName}</span>
                   </div>
                 </>
               ) : (
@@ -81,7 +84,7 @@ export default function MyPage({
             </div>
           </div>
           
-          <div className="shrink-0 ml-4">
+          <div className="shrink-0 ml-1">
             {!isLoggedIn ? (
               <button 
                 onClick={onLoginClick}
@@ -92,10 +95,12 @@ export default function MyPage({
             ) : (
               <button 
                 onClick={onSwitchRole}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-[var(--p)] text-[var(--p)] text-[13px] font-medium bg-[var(--pl)]"
+                aria-label="切换身份"
+                title="切换身份"
+                className="w-12 h-12 flex flex-col items-center justify-center gap-0.5 rounded-xl border border-[var(--bl)] text-[var(--ts)] bg-[var(--bb)] active:bg-[var(--bh)] active:text-[var(--p)] transition-colors"
               >
-                <ArrowRightLeft size={14} />
-                切换身份
+                <ArrowRightLeft size={16} />
+                <span className="text-[10px] leading-none">切换</span>
               </button>
             )}
           </div>

@@ -124,11 +124,13 @@ export default function App() {
       <main className="flex-1 flex flex-col min-w-0 h-full relative">
         {/* Topbar */}
         <header className="h-[56px] bg-[var(--bc)] border-b border-[var(--bl)] flex items-center px-3 md:px-5 shrink-0 gap-3">
-          <button 
-            onClick={handleUserClick}
-            className="md:hidden flex items-center justify-center p-1.5 rounded-full bg-[var(--bb)] hover:bg-[var(--bh)] transition-colors shrink-0"
+          <button
+            onClick={() => setActiveTab('home')}
+            aria-label="返回首页"
+            title="返回首页"
+            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg bg-[var(--p)] text-white font-bold text-[14px] shadow-sm active:bg-[var(--ph)] transition-colors shrink-0"
           >
-            {renderAvatar('small')}
+            君
           </button>
           
           <div className="flex-1 min-w-[120px] max-w-[400px] relative">
