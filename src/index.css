@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+:root {
+  --p: #005B9F;
+  --ph: #004C84;
+  --pl: #E6F0F8;
+  --pll: #F0F6FB;
+  --pg: linear-gradient(135deg, #005B9F, #004C84);
+  --bb: #EFF2F5;
+  --bc: #fff;
+  --bh: #E8ECF0;
+  --tm: #192646;
+  --ts: #4B5B76;
+  --tt: #86909C;
+  --bl: #E8ECF0;
+  --sc: 0 1px 4px rgba(25, 38, 70, .06);
+  --rs: 6px;
+  --rm: 8px;
+  --rl: 12px;
+  --ok: #00B42A;
+  --er: #F53F3F;
+  --wa: #FAAD14;
+  --info: #005B9F;
+}
+
+body {
+  background: var(--bb);
+  color: var(--tm);
+  line-height: 1.5;
+  font-family: var(--font-sans);
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D9D9D9; border-radius: 2px; }
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Researcher Panel Animations */
+@keyframes rpFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes rpSlideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* Live Pulse Animation */
+@keyframes livePulse {
+  0% { box-shadow: 0 0 0 3px var(--er), 0 0 8px 1px var(--er); opacity: 1; }
+  100% { box-shadow: 0 0 0 10px transparent, 0 0 20px 4px transparent; opacity: 0; }
+}
+
+/* Hide scrollbars for specific components */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+

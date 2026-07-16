@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>首页</title><style>
+:root{--p:#005B9F;--ph:#004C84;--pl:#E6F0F8;--pll:#F0F6FB;--pg:linear-gradient(135deg,#005B9F,#004C84);--bb:#EFF2F5;--bc:#fff;--bh:#E8ECF0;--tm:#192646;--ts:#4B5B76;--tt:#86909C;--bl:#E8ECF0;--sc:0 1px 4px rgba(25,38,70,.06);--rs:6px;--rm:8px;--rl:12px;--ok:#00B42A;--er:#F53F3F;--wa:#FAAD14;--info:#005B9F}
+*{box-sizing:border-box;margin:0;padding:0}html{font-size:14px}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bb);color:var(--tm);line-height:1.5;padding:16px 20px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#D9D9D9;border-radius:2px}
+
+/* Banner */
+.bn{width:100%;aspect-ratio:10/1;background:var(--pg);border-radius:var(--rl);display:flex;align-items:center;padding:10px 20px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden}
+.bn::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border:30px solid rgba(255,255,255,.08);border-radius:50%}
+.bn h1{font-size:16px;font-weight:700;margin-bottom:4px}.bn p{font-size:13px;opacity:.8}
+
+/* Card */
+.cd{background:var(--bc);border-radius:var(--rl);padding:16px;box-shadow:var(--sc);margin-bottom:16px}
+.ct{font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px;margin-bottom:12px}
+.ct .dot{width:4px;height:16px;background:var(--p);border-radius:2px;display:inline-block}
+.ct .more{margin-left:auto;font-size:12px;color:var(--tt);cursor:pointer;font-weight:400}
+
+/* Researcher scroll */
+.rs{display:flex;gap:16px;padding:0;margin:0;overflow-x:auto;overflow-y:hidden;-ms-overflow-style:none;scrollbar-width:none}
+.rs::-webkit-scrollbar{display:none}
+#my-follow::-webkit-scrollbar{display:none}
+#my-follow{scrollbar-width:none;-ms-overflow-style:none}
+.ri{min-width:80px;text-align:center;cursor:pointer;flex-shrink:0;position:relative}
+.ri .av{width:56px;height:56px;border-radius:50%;margin:0 auto 6px;overflow:hidden;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--p);font-weight:600}
+.ri .av img{width:100%;height:100%;object-fit:cover}
+.ri .nm{font-size:12px;font-weight:500;margin-top:4px;margin-bottom:2px}.ri .tm{font-size:10px;color:var(--tt)}
+.live-badge{position:absolute;top:44px;left:50%;transform:translateX(-50%);background:var(--er);color:#fff;font-size:8px;font-weight:700;padding:1px 5px;border-radius:6px;letter-spacing:0.5px;z-index:3;border:1.5px solid #fff;white-space:nowrap}
+
+/* Tags */
+.tg{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:500}
+.tag-red{background:#FFF1F0;color:var(--er)}
+.tag-blue{background:#E6F0FF;color:var(--p)}
+.tag-green{background:#F0FFF0;color:var(--ok)}
+.tag-primary{background:#EBF3FF;color:var(--info)}
+
+/* Filter bar */
+.rfb{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.ft{padding:4px 12px;border-radius:14px;font-size:12px;cursor:pointer;background:var(--bb);color:var(--ts);border:1px solid var(--bl);transition:all .2s}
+.ft:hover{border-color:var(--p);color:var(--p)}
+.ft.active{background:var(--p);color:#fff;border-color:var(--p)}
+
+/* Heatmap */
+.hm-cell{border-radius:6px;padding:8px;text-align:center;cursor:pointer;transition:transform .15s,box-shadow .15s;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hm-cell:hover{transform:scale(1.05);box-shadow:0 4px 12px rgba(0,0,0,.15);z-index:2;position:relative}
+.hm-name{font-size:11px;font-weight:600;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.2);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.hm-val{font-size:12px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.2);font-variant-numeric:tabular-nums}
+.hm-sub{font-size:9px;color:rgba(255,255,255,.8);margin-top:1px}
+.heatmap-wrap{display:flex;gap:16px}
+.heatmap-section{flex:1;min-width:0}
+.heatmap-label{font-size:11px;color:var(--tt);font-weight:500;margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.heatmap-label .dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.heatmap-label .dot.red{background:var(--er)}
+.heatmap-label .dot.blue{background:var(--info)}
+.heatmap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+@media(max-width:768px){
+  .heatmap-wrap{flex-direction:column;gap:12px}
+  .heatmap-grid{grid-template-columns:repeat(3,1fr);gap:5px}
+  .hm-cell{padding:6px 4px;min-height:48px}
+  .hm-name{font-size:10px}
+  .hm-val{font-size:11px}
+  .rfb{gap:4px;margin-bottom:10px}
+  .ft{padding:3px 10px;font-size:11px}
+}
+
+/* Report list */
+.rli{padding:8px 0;border-bottom:1px solid var(--bl);display:flex;align-items:flex-start;gap:8px}.rli:last-child{border-bottom:none}
+.rlb{flex:1;min-width:0}
+.rlt{font-size:12px;font-weight:500;margin-bottom:2px;line-height:1.4}
+.rlm{font-size:10px;color:var(--tt);display:flex;gap:8px}
+
+/* News item */
+.ni{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bl)}.ni:last-child{border-bottom:none}
+.ni .name{font-size:12px;font-weight:600;width:48px;flex-shrink:0}
+.ni .desc{flex:1;font-size:12px;min-width:0}
+.ni .date{font-size:11px;color:var(--tt);flex-shrink:0}
+
+/* Strategy card */
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.sc{background:var(--bb);border-radius:var(--rm);padding:12px}
+.sc .label{font-size:11px;color:var(--tt);margin-bottom:2px}
+.sc .val{font-size:14px;font-weight:600}
+.sc .sub{margin-top:8px}
+.sc .sub .label{font-size:11px;color:var(--tt)}
+.sc .sub .val{font-size:13px;font-weight:600}
+
+/* Live pulse */
+.live-pulse{position:absolute;top:-3px;left:50%;margin-left:-31px;width:62px;height:62px;border-radius:50%;animation:livePulse 1.5s ease-out infinite;pointer-events:none;z-index:0;box-shadow:0 0 0 3px var(--er),0 0 12px 2px var(--er)}
+@keyframes livePulse{0%{box-shadow:0 0 0 3px var(--er),0 0 8px 1px var(--er);opacity:1}100%{box-shadow:0 0 0 10px transparent,0 0 20px 4px transparent;opacity:0}}
+
+/* Follow cards */
+.fw{scroll-snap-align:start;min-width:200px;max-width:220px;flex-shrink:0;background:var(--bb);border-radius:var(--rm);padding:12px;display:flex;flex-direction:column;gap:6px}
+.fw::-webkit-scrollbar{display:none}
+.fw .ft-tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;display:inline-block;width:fit-content}
+.fw .ft-tag.tag-research{background:#EBF3FF;color:var(--p)}
+.fw .ft-tag.tag-comment{background:#FFF7E6;color:#D46B08}
+.fw .ft-tag.tag-live{background:#FFF1F0;color:var(--er)}
+.fw .ft-title{font-size:12px;font-weight:500;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fw .ft-meta{font-size:10px;color:var(--tt);margin-top:auto}
+.fw .ft-status{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 6px;border-radius:8px}
+.fw .ft-status.live{background:#FFF1F0;color:var(--er)}
+.fw .ft-status.done{background:var(--bb);color:var(--tt)}
+@media(max-width:768px){
+  .fw{min-width:160px;max-width:180px;padding:10px}
+}
+
+@media(max-width:768px){
+  body{padding:12px}
+  .rs{padding:0!important;overflow-x:auto!important;overflow-y:hidden!important;scrollbar-width:none!important;-ms-overflow-style:none!important}
+  .rs::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+  .bn{aspect-ratio:2.5/1;padding:16px 20px}.bn h1{font-size:18px}
+  .sg{display:flex;overflow-x:auto;gap:10px;scroll-snap-type:x mandatory}
+  .sg::-webkit-scrollbar{display:none}
+  .sg .sc{min-width:130px;max-width:140px;flex-shrink:0;scroll-snap-align:start;padding:10px}
+  .sg .sc .label{font-size:10px}
+  .sg .sc .val{font-size:13px}
+  .sg .sc .sub .label{font-size:10px}
+  .sg .sc .sub .val{font-size:12px}
+  .sg .sc .sub{margin-top:6px}
+  .announce-grid{grid-template-columns:1fr!important}
+  .announce-grid .cd{margin-bottom:12px}
+  .depth-grid{grid-template-columns:1fr!important}
+  .ni .name{width:40px;font-size:11px}
+  .ni .desc{font-size:11px}
+  .ct{font-size:14px;margin-bottom:10px}
+  .cd{padding:12px;margin-bottom:12px}
+  .rfb{gap:4px;margin-bottom:10px}
+  .ft{padding:3px 10px;font-size:11px}
+}
+
+@media(max-width:768px){.rp-panel{width:100%;max-width:100%;min-width:0;height:100%;border-radius:0}}
+</style></head><body>
+
+<!-- Banner -->
+<div class="bn"><div><h1>国泰君安期货</h1><p>中金所1号会员 · 机构服务一站式平台</p></div></div>
+
+<!-- 我的关注 -->
+<div class="cd" style="margin-bottom:16px">
+  <div class="ct"><span class="dot"></span> 我的关注 <span class="more">管理 →</span></div>
+  <div style="display:flex;overflow-x:auto;gap:12px;scroll-snap-type:x mandatory;-ms-overflow-style:none;scrollbar-width:none" id="my-follow"></div>
+</div>
+
+<!-- 明星研究员 -->
+<div class="cd">
+  <div class="ct"><span class="dot"></span> 明星研究员 <span class="more">更多 →</span></div>
+  <div class="rs" id="rl"></div>
+</div>
+
+<!-- 行情热力图 -->
+<div class="cd">
+  <div class="ct"><span class="dot"></span> 行情热力图
+    <div class="rfb" style="margin-left:auto;margin-bottom:0">
+      <span class="ft active" onclick="switchHeatmap('chg',this)">涨跌幅</span>
+      <span class="ft" onclick="switchHeatmap('vol',this)">成交金额</span>
+    </div>
+  </div>
+  <div class="heatmap-wrap" id="heatmapWrap">
+    <div class="heatmap-section">
+      <div class="heatmap-label"><span class="dot red"></span> 涨跌幅</div>
+      <div class="heatmap-grid" id="heatmapChg"></div>
+    </div>
+    <div class="heatmap-section">
+      <div class="heatmap-label"><span class="dot blue"></span> 成交金额</div>
+      <div class="heatmap-grid" id="heatmapVol"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 策略信号 -->
+<div class="cd">
+  <div class="ct"><span class="dot"></span> 策略信号 <span class="more">更多策略 →</span></div>
+  <div class="rfb">
+    <span class="ft active">基本面周度观点</span>
+    <span class="ft">多因子择时信号</span>
+    <span class="ft">套保信号</span>
+  </div>
+  <div class="sg">
+    <div class="sc"><div class="label">品种</div><div class="val">螺纹钢</div><div class="sub"><div class="label">周度信号</div><div class="val" style="color:var(--er)">看涨</div></div><div class="sub"><div class="label">周度涨跌幅</div><div class="val" style="color:var(--er)">+2.01%</div></div></div>
+    <div class="sc"><div class="label">品种</div><div class="val">沪银</div><div class="sub"><div class="label">周度信号</div><div class="val" style="color:var(--er)">看涨</div></div><div class="sub"><div class="label">周度涨跌幅</div><div class="val" style="color:var(--er)">+3.12%</div></div></div>
+    <div class="sc"><div class="label">品种</div><div class="val">原油</div><div class="sub"><div class="label">周度信号</div><div class="val" style="color:var(--ok)">看跌</div></div><div class="sub"><div class="label">周度涨跌幅</div><div class="val" style="color:var(--ok)">-1.2%</div></div></div>
+  </div>
+  <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <span style="font-size:11px;color:var(--tt)">筛选：</span>
+    <span class="ft active" style="font-size:11px;padding:2px 8px">全部品种</span>
+    <span class="ft" style="font-size:11px;padding:2px 8px">黑色系</span>
+    <span class="ft" style="font-size:11px;padding:2px 8px">贵金属</span>
+    <span class="ft" style="font-size:11px;padding:2px 8px">能化</span>
+    <span class="ft" style="font-size:11px;padding:2px 8px">农产品</span>
+  </div>
+</div>
+
+<!-- 公告通知 + 实时行情资讯 -->
+<div class="announce-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+  <div class="cd" style="margin-bottom:0">
+    <div class="ct"><span class="dot" style="background:var(--info)"></span> 公告通知 <span class="more">更多 →</span></div>
+    <div class="rfb" style="margin-bottom:10px">
+      <span class="ft active">公司公告</span>
+      <span class="ft">交易所公告</span>
+    </div>
+    <div>
+      <div class="ni"><span class="tg tag-primary" style="font-size:10px">公司</span><span class="desc">关于端午节假期交易保证金调整的通知</span><span class="date">06-24</span></div>
+      <div class="ni"><span class="tg tag-blue" style="font-size:10px">交易所</span><span class="desc">上期所关于调整螺纹钢期货手续费的通知</span><span class="date">06-23</span></div>
+      <div class="ni"><span class="tg tag-primary" style="font-size:10px">公司</span><span class="desc">国泰君安期货APP版本更新公告 V3.2.0</span><span class="date">06-22</span></div>
+      <div class="ni"><span class="tg tag-blue" style="font-size:10px">交易所</span><span class="desc">大商所关于多晶硅期货上市交易有关事项的通知</span><span class="date">06-21</span></div>
+    </div>
+  </div>
+  <div class="cd" style="margin-bottom:0">
+    <div class="ct"><span class="dot" style="background:var(--er)"></span> 实时行情资讯 <span class="more">实时刷新</span></div>
+    <div>
+      <div class="ni"><span class="name">原油</span><span class="desc">布伦特原油突破85美元，OPEC+减产预期升温</span><span style="font-size:11px;color:var(--er);flex-shrink:0">+1.8%</span></div>
+      <div class="ni"><span class="name">黄金</span><span class="desc">国际金价震荡走高，避险情绪支撑价格</span><span style="font-size:11px;color:var(--er);flex-shrink:0">+0.6%</span></div>
+      <div class="ni"><span class="name">多晶硅</span><span class="desc">多晶硅期货上市首日交投活跃，关注产业链价格传导</span><span style="font-size:11px;color:var(--er);flex-shrink:0">+2.1%</span></div>
+      <div class="ni"><span class="name">工业硅</span><span class="desc">工业硅供应宽松，下游需求复苏缓慢</span><span style="font-size:11px;color:var(--ok);flex-shrink:0">-0.9%</span></div>
+      <div class="ni"><span class="name">尿素</span><span class="desc">尿素市场淡储启动，价格底部支撑显现</span><span style="font-size:11px;color:var(--er);flex-shrink:0">+0.4%</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- 深度研报 -->
+<div class="cd">
+  <div class="ct"><span class="dot"></span> 深度研报 <span class="more">查看更多 →</span></div>
+  <div class="rfb">
+    <span class="ft active">宏观研究</span>
+    <span class="ft">商品策略</span>
+    <span class="ft">金融工程</span>
+    <span class="ft">资产配置</span>
+    <span class="ft">其他</span>
+  </div>
+  <div class="depth-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div>
+      <div style="font-size:12px;font-weight:600;margin-bottom:8px;color:var(--ts)">热度榜</div>
+      <div>
+        <div class="rli"><span class="tg tag-red">热</span><div class="rlb"><div class="rlt">6月宏观经济运行分析报告</div><div class="rlm"><span>宏观团队</span><span>06-24</span></div></div></div>
+        <div class="rli"><span class="tg tag-red">热</span><div class="rlb"><div class="rlt">商品期货市场季度策略展望</div><div class="rlm"><span>策略团队</span><span>06-23</span></div></div></div>
+        <div class="rli"><span class="tg tag-blue">新</span><div class="rlb"><div class="rlt">股指期货多因子模型最新研究成果</div><div class="rlm"><span>金工团队</span><span>06-22</span></div></div></div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;font-weight:600;margin-bottom:8px;color:var(--ts)">新发布</div>
+      <div>
+        <div class="rli"><span class="tg tag-green">新</span><div class="rlb"><div class="rlt">大类资产配置月报：权益优先</div><div class="rlm"><span>配置团队</span><span>06-24</span></div></div></div>
+        <div class="rli"><span class="tg tag-green">新</span><div class="rlb"><div class="rlt">能化产业链深度调研报告</div><div class="rlm"><span>能化团队</span><span>06-23</span></div></div></div>
+        <div class="rli"><span class="tg tag-blue">精</span><div class="rlb"><div class="rlt">黑色系供需格局与价格展望</div><div class="rlm"><span>黑色团队</span><span>06-22</span></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var R=[{n:'李亚飞',t:'黑色系',a:'avatars/李亚飞_star.png'},{n:'林小春',t:'宏观策略',a:'real_avatars/林小春.png',live:1},{n:'王笑',t:'宏观策略',a:'real_avatars/王笑.png'},{n:'黄柳楠',t:'能源化工',a:'real_avatars/黄柳楠.png'},{n:'季先飞',t:'贵金属',a:'real_avatars/季先飞.png'},{n:'唐立',t:'黑色系',a:'real_avatars/唐立.png'},{n:'张驰',t:'有色金属',a:'real_avatars/张驰.png'},{n:'吴昊',t:'农产品',a:'real_avatars/吴昊.png'}];
+document.getElementById('rl').innerHTML=R.map(function(r){var liveBadge=r.live?'<span class="live-badge">LIVE</span>':'';var pulseRing=r.live?'<span class="live-pulse"></span>':'';return '<div class="ri" data-r='+JSON.stringify(r)+'>'+pulseRing+liveBadge+'<div class="av"><img src="'+r.a+'" onerror="this.style.display=\'none\';this.parentElement.textContent=\''+r.n[0]+'\'"></div><div class="nm">'+r.n+'</div><div class="tm">'+r.t+'</div></div>'}).join('');
+
+// 我的关注
+var F=[{type:'research',typeText:'研报',title:'螺纹钢需求回暖，短期偏强运行',author:'李亚飞',time:'2小时前'},{type:'comment',typeText:'快评',title:'美联储议息会议点评：降息预期延后',author:'林小春',time:'3小时前'},{type:'live',typeText:'直播',title:'2026下半年大宗商品策略展望',author:'宏观团队',time:'今日 15:00',status:'live'},{type:'research',typeText:'研报',title:'原油市场周报：OPEC+减产力度超预期',author:'黄柳楠',time:'昨天'},{type:'comment',typeText:'快评',title:'多晶硅期货上市首日评述',author:'张驰',time:'昨天'},{type:'live',typeText:'直播',title:'黑色系产业链数据解读',author:'唐立',time:'明日 14:00',status:'upcoming'}];
+document.getElementById('my-follow').innerHTML=F.map(function(f){var sc=f.status==='live'?'live':f.status==='upcoming'?'live':'done';var sl=f.status==='live'?'● 直播中':f.status==='upcoming'?'● 即将开始':'';return '<div class="fw"><span class="ft-tag tag-'+f.type+'">'+f.typeText+'</span><div class="ft-title">'+f.title+'</div><div class="ft-meta">'+f.author+' · '+f.time+'</div>'+(sl?'<span class="ft-status '+sc+'">'+sl+'</span>':'')+'</div>'}).join('');
+
+// Heatmap
+var HM=[
+  {n:'沪铜',c:'CU2509',p:78650,ch:1.25,vol:482.6},
+  {n:'沪铝',c:'AL2509',p:20480,ch:-0.34,vol:215.3},
+  {n:'螺纹钢',c:'RB2510',p:3682,ch:0.88,vol:631.8},
+  {n:'原油',c:'SC2509',p:542.6,ch:-1.12,vol:398.5},
+  {n:'铁矿石',c:'I2509',p:836.5,ch:2.05,vol:524.1},
+  {n:'豆粕',c:'M2509',p:2968,ch:-0.47,vol:186.2},
+  {n:'甲醇',c:'MA2509',p:2654,ch:0.38,vol:142.7},
+  {n:'PTA',c:'TA2509',p:5872,ch:-0.72,vol:267.4},
+  {n:'棕榈油',c:'P2509',p:8936,ch:1.56,vol:178.9},
+  {n:'白银',c:'AG2509',p:7892,ch:0.93,vol:356.2},
+  {n:'黄金',c:'AU2509',p:568.20,ch:0.42,vol:412.8},
+  {n:'焦炭',c:'J2509',p:2145,ch:-0.56,vol:198.3}
+];
+function hmColor(chg){
+  var abs=Math.abs(chg);
+  var t=Math.min(1,abs/3);
+  if(chg>0){return 'rgb(255,'+Math.round(180-t*160)+','+Math.round(180-t*160)+')';}
+  if(chg<0){return 'rgb('+Math.round(180-t*160)+',255,'+Math.round(180-t*160)+')';}
+  return '#f5f5f5';
+}
+// Researcher Panel
+// Event delegation for researcher cards
+document.getElementById('rl').addEventListener('click',function(e){
+  var card=e.target.closest('.ri');
+  if(!card)return;
+  try{var r=JSON.parse(card.getAttribute('data-r'));openResearcher(r)}catch(ex){}
+});
+function openResearcher(r){
+  var url;
+  if(r.n==="林小春"){
+    url="https://live.polyv.cn/watch/4838158";
+    if((parent.innerWidth||window.innerWidth)>768){window.open(url,'_blank');return;}
+  }else{
+    url="https://claw.awulv.cn/live-h5/h5_researcher.html?name="+encodeURIComponent(r.n);
+  }
+  parent.postMessage({action:'openResearcher',title:r.n+(r.t?" - "+r.t:""),url:url},'*');
+}
+
+function renderHeatmapCells(container,type,items){
+  var html='';
+  items.forEach(function(d){
+    var bg=hmColor(d.ch);
+    var display=type==='chg'?(d.ch>0?'+':'')+d.ch.toFixed(2)+'%':d.vol.toFixed(1)+'亿';
+    html+='<div class="hm-cell" style="background:'+bg+'"><div class="hm-name">'+d.n+'</div><div class="hm-val">'+display+'</div><div class="hm-sub">'+d.c+'</div></div>';
+  });
+  document.getElementById(container).innerHTML=html;
+}
+function renderHeatmap(){
+  var isMobile=window.innerWidth<=768;
+  var count=isMobile?6:8;
+  renderHeatmapCells('heatmapChg','chg',HM.slice(0,count));
+  renderHeatmapCells('heatmapVol','vol',HM.slice(0,count));
+  // Mobile: show one section at a time with tabs
+  var wrap=document.getElementById('heatmapWrap');
+  var tabs=document.querySelector('.ct .rfb');
+  var chgSection=document.getElementById('heatmapChg').parentElement;
+  var volSection=document.getElementById('heatmapVol').parentElement;
+  if(isMobile){
+    wrap.style.display='block';
+    tabs.style.display='flex';
+    // Check which tab is active
+    var activeTab=tabs.querySelector('.ft.active');
+    var activeType=activeTab?activeTab.textContent:'涨跌幅';
+    if(activeType==='成交金额'){
+      chgSection.style.display='none';
+      volSection.style.display='block';
+    }else{
+      chgSection.style.display='block';
+      volSection.style.display='none';
+    }
+  }else{
+    wrap.style.display='flex';
+    tabs.style.display='none';
+    chgSection.style.display='';
+    volSection.style.display='';
+  }
+}
+function switchHeatmap(type,el){
+  el.parentElement.querySelectorAll('.ft').forEach(function(x){x.classList.remove('active')});
+  el.classList.add('active');
+  renderHeatmap();
+}
+renderHeatmap();
+window.addEventListener('resize',function(){renderHeatmap();});
+document.querySelectorAll('.ft').forEach(function(t){if(!t.getAttribute('onclick')){t.onclick=function(){var p=this.parentElement;p.querySelectorAll('.ft').forEach(function(x){x.classList.remove('active')});this.classList.add('active')}}});
+</script>
+</body></html>
