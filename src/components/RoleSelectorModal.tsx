@@ -10,8 +10,8 @@ interface RoleSelectorModalProps {
 
 export default function RoleSelectorModal({ currentRole, onSelectRole, onClose, onLogout }: RoleSelectorModalProps) {
   const roles = [
-    { id: '机构身份', name: '国泰君安风险管理有限公司', subText: '王燕勤', signed: true },
-    { id: '零售身份', name: '国泰海通证券股份有限公司', subText: '王燕勤', signed: false }
+    { id: '机构身份', name: '国泰君安期货有限公司', subText: '王燕勤', signed: true },
+    { id: '零售身份', name: '国泰海通证券有限公司', subText: '王燕勤', signed: false }
   ];
 
   return (

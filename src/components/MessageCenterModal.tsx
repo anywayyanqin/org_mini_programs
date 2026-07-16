@@ -31,7 +31,7 @@ interface CategoryConfig {
 export default function MessageCenterModal({ onClose }: MessageCenterModalProps) {
   const [activeCategory, setActiveCategory] = useState<MessageItem['category'] | null>(null);
   const [showSettings, setShowSettings] = useState(false);
-  const [bannerVisible, setBannerVisible] = useState(true);
+  const [bannerVisible, setBannerVisible] = useState(false);
   const [showPushPrompt, setShowPushPrompt] = useState(false);
   const [pushEnabled, setPushEnabled] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -124,13 +124,6 @@ export default function MessageCenterModal({ onClose }: MessageCenterModalProps)
   // Categories configuration matching the visual icons and styles in the screenshot
   const categories: CategoryConfig[] = [
     { 
-      key: 'announcement', 
-      label: '公告通知', 
-      icon: Megaphone, 
-      bgColor: 'bg-[#2B65D9]', 
-      defaultSub: '暂无新公告通知' 
-    },
-    { 
       key: 'subscription', 
       label: '订阅服务', 
       icon: Tv, 
@@ -138,25 +131,25 @@ export default function MessageCenterModal({ onClose }: MessageCenterModalProps)
       defaultSub: '您关注的研究员最新观点更新' 
     },
     { 
-      key: 'processing', 
-      label: '账户通知', 
-      icon: UserCheck, 
-      bgColor: 'bg-[#F5A623]', 
-      defaultSub: '交易通知、风控提醒、办理通知' 
-    },
-    { 
       key: 'benefits', 
-      label: '我的服务', 
+      label: '我的权益', 
       icon: Heart, 
       bgColor: 'bg-[#3A82F6]', 
       defaultSub: '特权开通及专属服务动态' 
     },
     { 
-      key: 'transaction', 
-      label: '交易通知', 
-      icon: Calendar, 
-      bgColor: 'bg-[#E67E22]', 
-      defaultSub: '交易通知相关推送' 
+      key: 'announcement', 
+      label: '公告通知', 
+      icon: Megaphone, 
+      bgColor: 'bg-[#2B65D9]', 
+      defaultSub: '暂无新公告通知' 
+    },
+    { 
+      key: 'activity', 
+      label: '活动通知', 
+      icon: Gift, 
+      bgColor: 'bg-[#F25F5C]', 
+      defaultSub: '限时投研福利及路演活动' 
     }
   ];
 

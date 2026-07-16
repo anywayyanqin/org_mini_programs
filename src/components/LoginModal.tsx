@@ -12,13 +12,18 @@ export default function LoginModal({ onLogin, onClose }: LoginModalProps) {
   const [step, setStep] = useState<'phone' | 'password' | 'code' | 'email_code'>('phone');
   const [isEditingPhone, setIsEditingPhone] = useState(false);
   const [agreed, setAgreed] = useState(false);
+  const [toastMsg, setToastMsg] = useState('');
   
   const isDefaultPhone = phone === defaultPhone && !isEditingPhone;
 
+  const showToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(''), 2000);
+  };
+
   const handleNext = () => {
     if (!agreed) {
-      // In a real app, show a toast here
-      alert("请先阅读并同意用户协议与隐私政策");
+      showToast("请先阅读并同意用户协议与隐私政策");
       return;
     }
     
@@ -42,6 +47,13 @@ export default function LoginModal({ onLogin, onClose }: LoginModalProps) {
     <div className="fixed inset-0 bg-black/45 z-[10000] flex flex-col justify-end md:justify-center items-center md:p-4 animate-[fadeIn_0.2s]">
       <div className="absolute inset-0 z-0" onClick={onClose}></div>
       <div className="w-full max-w-[400px] bg-white rounded-t-3xl md:rounded-3xl shadow-[var(--sc)] overflow-hidden relative z-10 animate-[slideUp_0.3s_ease-out] md:animate-[rpFadeIn_0.2s] pb-6">
+        
+        {toastMsg && (
+          <div className="absolute top-[30%] left-1/2 -translate-x-1/2 bg-black/80 text-white px-4 py-2.5 rounded-lg text-[13px] z-50 animate-[fadeIn_0.2s] whitespace-nowrap shadow-lg">
+            {toastMsg}
+          </div>
+        )}
+
         <button onClick={onClose} className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-[var(--bb)] hover:bg-[var(--bh)] text-[var(--ts)] transition-colors">
           <X size={18} />
         </button>
@@ -162,8 +174,7 @@ export default function LoginModal({ onLogin, onClose }: LoginModalProps) {
                 <button onClick={onLogin} className="w-full py-4 bg-[var(--p)] text-white rounded-full font-bold text-[16px] mt-2 shadow-sm hover:shadow-md hover:bg-[var(--ph)] transition-all">
                   登 录
                 </button>
-                <div className="flex justify-between items-center text-[13px] px-2 mt-4">
-                  <span className="text-[var(--ts)] hover:text-[var(--p)] cursor-pointer">忘记密码</span>
+                <div className="flex justify-end items-center text-[13px] px-2 mt-4">
                   <span className="text-[var(--p)] font-medium cursor-pointer" onClick={() => setStep('code')}>验证码登录</span>
                 </div>
               </div>
@@ -231,7 +242,7 @@ export default function LoginModal({ onLogin, onClose }: LoginModalProps) {
 
                 <button 
                   onClick={() => {
-                    if(!agreed) { alert("请先同意协议"); return; }
+                    if(!agreed) { showToast("请先阅读并同意用户协议与隐私政策"); return; }
                     onLogin();
                   }} 
                   className="w-full py-4 bg-[var(--p)] text-white rounded-full font-bold text-[16px] mt-2 shadow-sm hover:shadow-md hover:bg-[var(--ph)] transition-all"

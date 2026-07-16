@@ -16,12 +16,12 @@ export default function App() {
   
   const getUserDisplayName = () => {
     if (!isLoggedIn) return '游客';
-    return userRole === '机构身份' ? '国泰' : '王燕勤';
+    return userRole === '机构身份' ? '国泰君安期货有限公司' : '王燕勤';
   };
 
   const getRoleDisplayName = () => {
     if (!isLoggedIn) return '未登录';
-    return userRole;
+    return '王燕勤';
   };
 
   const handleUserClick = () => {

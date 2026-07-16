@@ -20,7 +20,7 @@ interface BenefitItem {
 
 export default function BenefitsPage({ onBack }: BenefitsPageProps) {
   const [activeTab, setActiveTab] = useState<'quant' | 'strategy' | 'reports'>('quant');
-  const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
+  const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
 
   // Core benefits data matched with screenshot
   const benefitsData: BenefitItem[] = [
@@ -185,12 +185,12 @@ export default function BenefitsPage({ onBack }: BenefitsPageProps) {
           {filteredItems.map((item) => (
             <motion.div
               key={item.id}
-              initial={{ opacity: 0, y: 8 }}
+              layout
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              onMouseEnter={() => setHoveredItemId(item.id)}
-              onMouseLeave={() => setHoveredItemId(null)}
-              className="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex flex-col relative z-10 hover:z-50 transition-all hover:shadow-md"
+              onClick={() => setExpandedItemId(expandedItemId === item.id ? null : item.id)}
+              className="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex flex-col relative z-10 transition-all hover:shadow-md cursor-pointer"
             >
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-start gap-3">
@@ -214,41 +214,47 @@ export default function BenefitsPage({ onBack }: BenefitsPageProps) {
 
                 {/* Renew Button */}
                 <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Handle renew logic here if needed
+                  }}
                   className="shrink-0 px-6 py-2 text-[13px] font-medium text-white bg-[#2B65D9] hover:bg-[#1E4EB0] active:scale-95 transition-all rounded-lg shadow-sm"
                 >
                   立刻续费
                 </button>
               </div>
 
-              {/* Hover Popover */}
+              {/* Expandable Details */}
               <AnimatePresence>
-                {hoveredItemId === item.id && (
+                {expandedItemId === item.id && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 5, scale: 0.98 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute top-[100%] left-0 w-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 p-4 z-50 pointer-events-none"
+                    initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                    animate={{ height: 'auto', opacity: 1, marginTop: 16 }}
+                    exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden border-t border-gray-100"
                   >
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-[3px] h-3.5 bg-[#2B65D9] rounded-full"></div>
-                      <h4 className="text-[14px] font-bold text-slate-800 leading-none">当前权益状态概览</h4>
-                      {/* 服务资费 display added per user request */}
-                      <span className="ml-auto text-[12px] text-slate-500 font-medium">
-                        服务资费: <span className="text-[#F5A623] font-bold">{item.price}</span>
-                      </span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 bg-[#2B65D9] rounded-full shrink-0 mt-1.5"></div>
-                      <div className="flex-1 flex justify-between items-end gap-4 text-[13px] text-slate-700 leading-relaxed">
-                        <div className="flex-1">
-                          {item.details || '暂无详细概览数据'}
-                        </div>
-                        {item.remainingDays !== undefined && (
-                          <div className="shrink-0 whitespace-nowrap text-slate-500">
-                            有效期剩余: <span className="text-[#2B65D9] font-bold">{item.remainingDays}</span> 天
+                    <div className="pt-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-[3px] h-3.5 bg-[#2B65D9] rounded-full"></div>
+                        <h4 className="text-[14px] font-bold text-slate-800 leading-none">当前权益状态概览</h4>
+                        {/* 服务资费 display added per user request */}
+                        <span className="ml-auto text-[12px] text-slate-500 font-medium">
+                          服务资费: <span className="text-[#F5A623] font-bold">{item.price}</span>
+                        </span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 bg-[#2B65D9] rounded-full shrink-0 mt-1.5"></div>
+                        <div className="flex-1 flex justify-between items-end gap-4 text-[13px] text-slate-700 leading-relaxed">
+                          <div className="flex-1">
+                            {item.details || '暂无详细概览数据'}
                           </div>
-                        )}
+                          {item.remainingDays !== undefined && (
+                            <div className="shrink-0 whitespace-nowrap text-slate-500">
+                              有效期剩余: <span className="text-[#2B65D9] font-bold">{item.remainingDays}</span> 天
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </motion.div>
