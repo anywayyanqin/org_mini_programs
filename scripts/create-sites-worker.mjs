@@ -5,12 +5,12 @@ let html = await readFile(indexPath, "utf8");
 const cssMatch = html.match(/<link rel="stylesheet" crossorigin href="([^"]+)">/);
 if (cssMatch) {
   const css = (await readFile(`dist${cssMatch[1]}`, "utf8")).replaceAll("</style", "<\\/style");
-  html = html.replace(cssMatch[0], `<style>${css}</style>`);
+  html = html.replace(cssMatch[0], () => `<style>${css}</style>`);
 }
 const jsMatch = html.match(/<script type="module" crossorigin src="([^"]+)"><\/script>/);
 if (jsMatch) {
   const js = (await readFile(`dist${jsMatch[1]}`, "utf8")).replaceAll("</script", "<\\/script");
-  html = html.replace(jsMatch[0], `<script type="module">${js}</script>`);
+  html = html.replace(jsMatch[0], () => `<script type="module">${js}</script>`);
 }
 await writeFile(indexPath, html);
 
