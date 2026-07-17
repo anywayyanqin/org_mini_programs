@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Share2, AlertCircle, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronDown, Share2, AlertCircle, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import BenefitContentPage, { type BenefitContentItem } from './BenefitContentPage';
 
 interface BenefitsPageProps {
   onBack: () => void;
 }
 
-type BenefitItem = BenefitContentItem;
+interface BenefitItem {
+  id: string;
+  title: string;
+  author?: string;
+  tag: string;
+  expiryDate: string;
+  category: 'quant' | 'strategy' | 'reports';
+  price: string;
+  details?: string;
+  remainingDays?: number;
+}
 
 export default function BenefitsPage({ onBack }: BenefitsPageProps) {
   const [activeTab, setActiveTab] = useState<'quant' | 'strategy' | 'reports'>('quant');
-  const [selectedItem, setSelectedItem] = useState<BenefitItem | null>(null);
+  const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
+  const [previewItem, setPreviewItem] = useState<BenefitItem | null>(null);
 
   // Core benefits data matched with screenshot
   const benefitsData: BenefitItem[] = [
@@ -128,10 +138,6 @@ export default function BenefitsPage({ onBack }: BenefitsPageProps) {
 
   const filteredItems = benefitsData.filter(item => item.category === activeTab);
 
-  if (selectedItem) {
-    return <BenefitContentPage item={selectedItem} onBack={() => setSelectedItem(null)} />;
-  }
-
   return (
     <div className="flex-1 flex flex-col h-full bg-[#F5F6FA] text-[var(--tm)]">
       {/* Top Header */}
@@ -184,10 +190,14 @@ export default function BenefitsPage({ onBack }: BenefitsPageProps) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              onClick={() => setSelectedItem(item)}
-              className="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex flex-col relative z-10 transition-all hover:shadow-md cursor-pointer"
+              className="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex flex-col relative z-10 transition-all hover:shadow-md"
             >
-              <div className="flex items-start">
+              <button
+                type="button"
+                onClick={() => setPreviewItem(item)}
+                className="group flex items-start w-full text-left rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2B65D9]/40"
+                aria-label={`查看${item.title}内容`}
+              >
                 <div className="flex items-start gap-3 flex-1 min-w-0">
                   <div className="w-8 h-8 rounded-lg bg-[#F2F6FF] text-[#2B65D9] flex items-center justify-center shrink-0 mt-0.5">
                     <Share2 size={16} />
@@ -206,12 +216,61 @@ export default function BenefitsPage({ onBack }: BenefitsPageProps) {
                     </div>
                   </div>
                 </div>
-                <ChevronRight size={18} className="text-slate-300 shrink-0 mt-1" />
-              </div>
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[11px] text-slate-400">点击进入权益内容</span>
-                <span className="text-[12px] font-bold text-[#2B65D9] flex items-center gap-0.5">进入内容页 <ChevronRight size={13} /></span>
-              </div>
+
+                <span className="ml-3 mt-1 w-8 h-8 rounded-full bg-[#F7F9FC] text-slate-400 flex items-center justify-center shrink-0 transition-all group-hover:bg-[#EDF3FF] group-hover:text-[#2B65D9] group-hover:translate-x-0.5">
+                  <ArrowRight size={16} />
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setExpandedItemId(expandedItemId === item.id ? null : item.id)}
+                className="mt-3 pt-3 border-t border-gray-100 flex items-center gap-2 w-full text-left text-[12px] font-medium text-slate-500 hover:text-[#2B65D9] transition-colors"
+                aria-expanded={expandedItemId === item.id}
+              >
+                <span className="w-[3px] h-3.5 bg-[#2B65D9] rounded-full" />
+                <span>当前权益状态概览</span>
+                <ChevronDown
+                  size={15}
+                  className={`ml-auto transition-transform duration-200 ${expandedItemId === item.id ? 'rotate-180' : ''}`}
+                />
+              </button>
+
+              {/* Expandable Details */}
+              <AnimatePresence>
+                {expandedItemId === item.id && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                    animate={{ height: 'auto', opacity: 1, marginTop: 12 }}
+                    exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="rounded-xl bg-[#F8FAFD] border border-[#EDF1F7] p-3.5">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="ml-auto text-[12px] text-slate-500 font-medium">
+                          服务资费: <span className="text-[#F5A623] font-bold">{item.price}</span>
+                        </span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 bg-[#2B65D9] rounded-full shrink-0 mt-1.5"></div>
+                        <div className="flex-1 flex justify-between items-end gap-4 text-[13px] text-slate-700 leading-relaxed">
+                          <div className="flex-1">
+                            {item.details || '暂无详细概览数据'}
+                          </div>
+                          <div className="shrink-0 flex flex-col items-end gap-2">
+                            {item.remainingDays !== undefined && (
+                              <div className="whitespace-nowrap text-slate-500">
+                                有效期剩余: <span className="text-[#2B65D9] font-bold">{item.remainingDays}</span> 天
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           ))}
         </AnimatePresence>
@@ -223,6 +282,63 @@ export default function BenefitsPage({ onBack }: BenefitsPageProps) {
           </div>
         )}
       </div>
+
+      <AnimatePresence>
+        {previewItem && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] bg-black/45 flex justify-end"
+          >
+            <motion.div
+              initial={{ x: 40, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 40, opacity: 0 }}
+              transition={{ duration: 0.22 }}
+              className="w-full md:max-w-[560px] h-full bg-[var(--bc)] shadow-[-10px_0_30px_rgba(0,0,0,0.18)] flex flex-col"
+            >
+              <div className="h-[56px] px-4 border-b border-[var(--bl)] flex items-center gap-3">
+                <button
+                  onClick={() => setPreviewItem(null)}
+                  className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-[var(--bh)] text-[var(--tm)]"
+                  aria-label="关闭"
+                >
+                  <ArrowLeft size={20} />
+                </button>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[15px] font-bold text-[var(--tm)] truncate">{previewItem.title}</div>
+                  <div className="text-[11px] text-[var(--tt)]">内容承载示意</div>
+                </div>
+              </div>
+
+              <div className="flex-1 overflow-auto bg-[var(--bb)] p-4 md:p-6">
+                <section className="rounded-2xl border border-[var(--bl)] bg-[var(--bc)] p-5 shadow-sm">
+                  <div className="flex items-start gap-3">
+                    <div className="w-11 h-11 rounded-xl bg-[#F2F6FF] text-[#2B65D9] flex items-center justify-center shrink-0">
+                      <FileText size={19} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h2 className="text-[18px] font-bold text-[var(--tm)] leading-tight">
+                          {previewItem.title}
+                        </h2>
+                        <span className="text-[11px] text-[#2B65D9] border border-[#AEC6FF] bg-[#F2F6FF] px-1.5 py-0.5 rounded font-medium">
+                          {previewItem.tag}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-[13px] text-[var(--tt)]">
+                        这里是该权益对应的内容承载页，后续会继续补充专题内容、历史记录与详情承接。
+                      </p>
+                    </div>
+                  </div>
+
+                </section>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
