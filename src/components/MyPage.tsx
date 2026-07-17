@@ -114,18 +114,6 @@ export default function MyPage({
           </div>
         </div>
 
-        {/* Institution Status Card */}
-        {isLoggedIn && showSignedInstitution && (
-          <div className="mt-6 bg-gradient-to-r from-[#FCE6D3] to-[#F5D4B5] rounded-xl p-4 flex items-center justify-between">
-            <div>
-              <h3 className="font-bold text-[#8A4A1C] text-[15px] mb-1">机构专属服务已激活</h3>
-              <p className="text-[#A56839] text-[12px]">畅享全量研报、专属路演及高级数据权限</p>
-            </div>
-            <div className="w-10 h-10 rounded-full bg-white/40 flex items-center justify-center shrink-0 text-[#8A4A1C]">
-              <Star size={20} className="fill-current" />
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Menu Blocks */}
