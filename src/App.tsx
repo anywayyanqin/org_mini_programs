@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Bell, Home, FileText, Users, BarChart2, Tv, User, X, ArrowRightLeft, LogIn, BadgeCheck } from 'lucide-react';
+import { Search, Bell, Home, FileText, Users, BarChart2, Tv, User, CircleUserRound, X, ArrowRightLeft, LogIn, BadgeCheck } from 'lucide-react';
 import { futuresData } from './data';
 import HomePage from './components/HomePage';
 import LoginModal from './components/LoginModal';
@@ -177,7 +177,20 @@ export default function App() {
                 )}
               </>
             ) : (
-              <LogIn size={14} className="text-[var(--p)] shrink-0" aria-hidden="true" />
+              <>
+                <CircleUserRound
+                  size={22}
+                  strokeWidth={2.15}
+                  className="text-[var(--p)] shrink-0"
+                  aria-hidden="true"
+                />
+                <span
+                  className="absolute -right-1 -bottom-1 w-[17px] h-[17px] rounded-full bg-[var(--p)] text-white border-2 border-[var(--bc)] flex items-center justify-center shadow-[0_1px_3px_rgba(0,91,159,.28)]"
+                  aria-hidden="true"
+                >
+                  <LogIn size={9} strokeWidth={2.8} />
+                </span>
+              </>
             )}
           </button>
           
