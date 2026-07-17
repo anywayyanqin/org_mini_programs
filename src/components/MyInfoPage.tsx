@@ -38,18 +38,6 @@ export default function MyInfoPage({ onBack, userRole, isProfileIncomplete = fal
               <span className="text-[14px] text-[#333]">机构名称</span>
               <span className="text-[14px] text-[#999]">{isProfileIncomplete ? '未填写' : (isInstitution ? '国泰君安期货有限公司' : '国泰海通证券有限公司')}</span>
             </div>
-            <div className="flex justify-between items-center py-4 border-b border-[#F0F0F0]">
-              <span className="text-[14px] text-[#333]">机构类型</span>
-              <span className="text-[14px] text-[#999]">金融机构</span>
-            </div>
-            <div className="flex justify-between items-center py-4 border-b border-[#F0F0F0]">
-              <span className="text-[14px] text-[#333]">证件类型</span>
-              <span className="text-[14px] text-[#999]">统一社会信用代码</span>
-            </div>
-            <div className="flex justify-between items-center py-4">
-              <span className="text-[14px] text-[#333]">机构代码</span>
-              <span className="text-[14px] text-[#999]">913*************11J</span>
-            </div>
           </div>
         </div>
 
