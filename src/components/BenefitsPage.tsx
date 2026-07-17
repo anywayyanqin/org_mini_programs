@@ -1,26 +1,17 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Share2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Share2, AlertCircle, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import BenefitContentPage, { type BenefitContentItem } from './BenefitContentPage';
 
 interface BenefitsPageProps {
   onBack: () => void;
 }
 
-interface BenefitItem {
-  id: string;
-  title: string;
-  author?: string;
-  tag: string;
-  expiryDate: string;
-  category: 'quant' | 'strategy' | 'reports';
-  price: string;
-  details?: string;
-  remainingDays?: number;
-}
+type BenefitItem = BenefitContentItem;
 
 export default function BenefitsPage({ onBack }: BenefitsPageProps) {
   const [activeTab, setActiveTab] = useState<'quant' | 'strategy' | 'reports'>('quant');
-  const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<BenefitItem | null>(null);
 
   // Core benefits data matched with screenshot
   const benefitsData: BenefitItem[] = [
@@ -137,6 +128,10 @@ export default function BenefitsPage({ onBack }: BenefitsPageProps) {
 
   const filteredItems = benefitsData.filter(item => item.category === activeTab);
 
+  if (selectedItem) {
+    return <BenefitContentPage item={selectedItem} onBack={() => setSelectedItem(null)} />;
+  }
+
   return (
     <div className="flex-1 flex flex-col h-full bg-[#F5F6FA] text-[var(--tm)]">
       {/* Top Header */}
@@ -189,7 +184,7 @@ export default function BenefitsPage({ onBack }: BenefitsPageProps) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              onClick={() => setExpandedItemId(expandedItemId === item.id ? null : item.id)}
+              onClick={() => setSelectedItem(item)}
               className="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex flex-col relative z-10 transition-all hover:shadow-md cursor-pointer"
             >
               <div className="flex items-start">
@@ -211,45 +206,12 @@ export default function BenefitsPage({ onBack }: BenefitsPageProps) {
                     </div>
                   </div>
                 </div>
-
+                <ChevronRight size={18} className="text-slate-300 shrink-0 mt-1" />
               </div>
-
-              {/* Expandable Details */}
-              <AnimatePresence>
-                {expandedItemId === item.id && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                    animate={{ height: 'auto', opacity: 1, marginTop: 16 }}
-                    exit={{ height: 0, opacity: 0, marginTop: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden border-t border-gray-100"
-                  >
-                    <div className="pt-4">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-[3px] h-3.5 bg-[#2B65D9] rounded-full"></div>
-                        <h4 className="text-[14px] font-bold text-slate-800 leading-none">当前权益状态概览</h4>
-                        {/* 服务资费 display added per user request */}
-                        <span className="ml-auto text-[12px] text-slate-500 font-medium">
-                          服务资费: <span className="text-[#F5A623] font-bold">{item.price}</span>
-                        </span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <div className="w-1.5 h-1.5 bg-[#2B65D9] rounded-full shrink-0 mt-1.5"></div>
-                        <div className="flex-1 flex justify-between items-end gap-4 text-[13px] text-slate-700 leading-relaxed">
-                          <div className="flex-1">
-                            {item.details || '暂无详细概览数据'}
-                          </div>
-                          {item.remainingDays !== undefined && (
-                            <div className="shrink-0 whitespace-nowrap text-slate-500">
-                              有效期剩余: <span className="text-[#2B65D9] font-bold">{item.remainingDays}</span> 天
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                <span className="text-[11px] text-slate-400">点击进入权益内容</span>
+                <span className="text-[12px] font-bold text-[#2B65D9] flex items-center gap-0.5">进入内容页 <ChevronRight size={13} /></span>
+              </div>
             </motion.div>
           ))}
         </AnimatePresence>
