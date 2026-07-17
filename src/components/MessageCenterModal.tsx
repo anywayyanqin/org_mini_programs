@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   X, ChevronRight, Check, Trash2, Bell, Sparkles, Inbox, 
   Tv, UserCheck, Gift, Megaphone, Heart, MessageSquare, 
-  TrendingUp, Calendar, CheckCheck, Settings, Shield, BellRing,
+  TrendingUp, Calendar, CheckCheck, BellRing,
   ArrowLeft, RefreshCw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -30,7 +30,6 @@ interface CategoryConfig {
 
 export default function MessageCenterModal({ onClose }: MessageCenterModalProps) {
   const [activeCategory, setActiveCategory] = useState<MessageItem['category'] | null>(null);
-  const [showSettings, setShowSettings] = useState(false);
   const [bannerVisible, setBannerVisible] = useState(false);
   const [showPushPrompt, setShowPushPrompt] = useState(false);
   const [pushEnabled, setPushEnabled] = useState(false);
@@ -225,25 +224,16 @@ export default function MessageCenterModal({ onClose }: MessageCenterModalProps)
             </span>
           </div>
 
-          {/* Action buttons (Broom & settings) */}
+          {/* Action buttons */}
           <div className="flex items-center gap-2">
             {!activeCategory && (
-              <>
-                <button 
-                  onClick={markAllAsRead}
-                  className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 text-slate-600 active:scale-90 transition-all relative"
-                  title="一键已读"
-                >
-                  <CheckCheck size={18} />
-                </button>
-                <button 
-                  onClick={() => setShowSettings(!showSettings)}
-                  className={`w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 text-slate-600 active:scale-90 transition-all ${showSettings ? 'bg-slate-100 text-[#2B65D9]' : ''}`}
-                  title="推送设置"
-                >
-                  <Settings size={18} />
-                </button>
-              </>
+              <button 
+                onClick={markAllAsRead}
+                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 text-slate-600 active:scale-90 transition-all relative"
+                title="一键已读"
+              >
+                <CheckCheck size={18} />
+              </button>
             )}
             {activeCategory && (
               <button 
@@ -306,52 +296,6 @@ export default function MessageCenterModal({ onClose }: MessageCenterModalProps)
               </motion.div>
             )}
 
-            {/* 2. Push Setting Slide-over Panel */}
-            {showSettings && (
-              <motion.div 
-                initial={{ y: '-100%', opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: '-100%', opacity: 0 }}
-                className="absolute inset-x-0 top-0 bg-white border-b border-gray-100 shadow-lg z-40 p-4"
-              >
-                <div className="flex justify-between items-center mb-3">
-                  <span className="font-bold text-[14px] text-slate-800 flex items-center gap-1">
-                    <Shield size={16} className="text-[#2B65D9]" /> 推送设置
-                  </span>
-                  <button 
-                    onClick={() => setShowSettings(false)}
-                    className="p-1 rounded-full hover:bg-slate-100 text-slate-400"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-                
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center py-1">
-                    <div className="flex flex-col">
-                      <span className="text-[13px] font-medium text-slate-700">允许接收系统通知</span>
-                      <span className="text-[11px] text-slate-400">研报跟进、异常风控通告等</span>
-                    </div>
-                    <button 
-                      onClick={() => setPushEnabled(!pushEnabled)}
-                      className={`w-10 h-6 rounded-full p-0.5 transition-colors ${pushEnabled ? 'bg-emerald-500' : 'bg-gray-300'}`}
-                    >
-                      <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform ${pushEnabled ? 'translate-x-4' : 'translate-x-0'}`} />
-                    </button>
-                  </div>
-                  
-                  <div className="flex justify-between items-center py-1 border-t border-gray-50 pt-2">
-                    <div className="flex flex-col">
-                      <span className="text-[13px] font-medium text-slate-700">夜间勿扰模式</span>
-                      <span className="text-[11px] text-slate-400">22:00 至 次日 07:00 消息免打扰</span>
-                    </div>
-                    <div className="w-10 h-6 rounded-full p-0.5 bg-emerald-500 cursor-not-allowed">
-                      <div className="w-5 h-5 bg-white rounded-full shadow-sm transform translate-x-4" />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
           </AnimatePresence>
 
           {/* MAIN CONTAINER CONTENT - CHANNELS OR SUB MESSAGES */}

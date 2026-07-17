@@ -145,7 +145,6 @@ export default function LoginModal({ onLogin, onClose }: LoginModalProps) {
                   我已阅读并同意 
                   <a href="#" className="text-[var(--ts)] hover:text-[var(--p)]" onClick={(e) => e.stopPropagation()}>《用户协议》</a> 
                   <a href="#" className="text-[var(--ts)] hover:text-[var(--p)]" onClick={(e) => e.stopPropagation()}>《隐私政策》</a>
-                  <a href="#" className="text-[var(--ts)] hover:text-[var(--p)]" onClick={(e) => e.stopPropagation()}>《认证服务条款》</a>
                 </span>
               </div>
             </div>

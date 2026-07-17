@@ -1,9 +1,10 @@
 import React from 'react';
-import { ArrowRight, Building2, CheckCircle2, FileText, ShieldCheck, TrendingUp, X } from 'lucide-react';
+import { ArrowRight, Building2, FileText, ShieldCheck, TrendingUp, X } from 'lucide-react';
 
 export interface ProtectedContent {
   kind: '研报' | '策略';
   title: string;
+  access?: 'institution' | 'none';
 }
 
 interface AccessPromptProps {
@@ -12,18 +13,18 @@ interface AccessPromptProps {
   onSwitchAndOpen: () => void;
 }
 
-export function ContentAccessPrompt({ content, onClose, onSwitchAndOpen }: AccessPromptProps) {
+export function ContentAccessPrompt({ onClose, onSwitchAndOpen }: AccessPromptProps) {
   return (
     <div className="fixed inset-0 z-[10000] flex items-end md:items-center justify-center bg-black/45 md:p-4 animate-[rpFadeIn_0.2s]">
       <div className="w-full max-w-[400px] overflow-hidden rounded-t-2xl md:rounded-2xl bg-[var(--bc)] shadow-xl animate-[slideUp_0.24s_ease-out] md:animate-none pb-[env(safe-area-inset-bottom)]">
-        <div className="flex items-start gap-3 border-b border-[var(--bl)] p-5">
+        <div className="flex items-start gap-3 p-5 pb-4">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--pl)] text-[var(--p)]">
             <ShieldCheck size={21} />
           </div>
           <div className="min-w-0 flex-1">
-            <h2 className="text-[16px] font-bold text-[var(--tm)]">切换为机构身份后查看</h2>
+            <h2 className="text-[16px] font-bold text-[var(--tm)]">切换身份查看</h2>
             <p className="mt-1 text-[12px] leading-5 text-[var(--tt)]">
-              该{content.kind}包含机构专属数据，当前零售身份暂无查看权限。
+              当前身份暂无权限，可切换至已有权益的身份查看。
             </p>
           </div>
           <button
@@ -35,35 +36,58 @@ export function ContentAccessPrompt({ content, onClose, onSwitchAndOpen }: Acces
           </button>
         </div>
 
-        <div className="p-4">
-          <div className="rounded-xl border border-[var(--bl)] bg-[var(--bb)] p-4">
-            <div className="mb-3 flex items-center gap-2 text-[11px] text-[var(--tt)]">
-              <span className="rounded bg-white px-2 py-0.5">即将打开的{content.kind}</span>
-            </div>
-            <p className="text-[14px] font-semibold leading-6 text-[var(--tm)]">{content.title}</p>
-          </div>
-
-          <div className="my-4 flex items-center gap-3 px-1">
+        <div className="px-4 pb-5">
+          <div className="mb-4 flex items-center gap-3 rounded-xl border border-[var(--p)] bg-[var(--pl)] p-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F5A623] text-[11px] font-bold text-white">国泰</div>
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-semibold text-[var(--tm)]">国泰君安期货有限公司</p>
-              <p className="text-[11px] text-[var(--tt)]">机构身份 · 王燕勤</p>
+              <div className="flex items-center gap-2">
+                <p className="truncate text-[13px] font-semibold text-[var(--tm)]">国泰君安期货有限公司</p>
+                <span className="shrink-0 rounded-full bg-[#FCE6D3] px-2 py-0.5 text-[10px] font-medium leading-none text-[#A56839]">
+                  已签约
+                </span>
+              </div>
+              <p className="text-[11px] text-[var(--tt)]">王燕勤</p>
             </div>
-            <CheckCircle2 size={18} className="shrink-0 text-[var(--p)]" />
           </div>
 
           <button
             onClick={onSwitchAndOpen}
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--p)] py-3 text-[14px] font-bold text-white active:bg-[var(--ph)]"
           >
-            切换并查看{content.kind}
+            切换后查看
             <ArrowRight size={17} />
           </button>
-          <button
-            onClick={onClose}
-            className="mt-2.5 w-full py-2.5 text-[13px] text-[var(--tt)]"
-          >
-            暂不切换
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function NoContentAccessPrompt({ content, onClose }: Pick<AccessPromptProps, 'content' | 'onClose'>) {
+  return (
+    <div className="fixed inset-0 z-[10000] flex items-end md:items-center justify-center bg-black/45 md:p-4 animate-[rpFadeIn_0.2s]">
+      <div className="w-full max-w-[400px] overflow-hidden rounded-t-2xl md:rounded-2xl bg-[var(--bc)] shadow-xl animate-[slideUp_0.24s_ease-out] md:animate-none pb-[env(safe-area-inset-bottom)]">
+        <div className="flex items-start gap-3 border-b border-[var(--bl)] p-5">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bb)] text-[var(--tt)]">
+            <ShieldCheck size={21} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-[16px] font-bold text-[var(--tm)]">暂无查看权限</h2>
+            <p className="mt-1 text-[12px] leading-5 text-[var(--tt)]">
+              当前已有身份均未开通该权益，如需查看，请联系客户经理申请开通。
+            </p>
+          </div>
+          <button onClick={onClose} aria-label="关闭" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[var(--tt)] hover:bg-[var(--bh)]">
+            <X size={19} />
+          </button>
+        </div>
+        <div className="p-4">
+          <div className="rounded-xl border border-[var(--bl)] bg-[var(--bb)] p-4">
+            <span className="rounded bg-white px-2 py-0.5 text-[11px] text-[var(--tt)]">当前内容</span>
+            <p className="mt-3 text-[14px] font-semibold leading-6 text-[var(--tm)]">{content.title}</p>
+          </div>
+          <button onClick={onClose} className="mt-4 w-full rounded-xl bg-[var(--p)] py-3 text-[14px] font-bold text-white active:bg-[var(--ph)]">
+            我知道了
           </button>
         </div>
       </div>

@@ -259,13 +259,13 @@ export default function HomePage({ onOpenResearcher, onOpenProtectedContent }: H
             <div className="text-[12px] font-semibold mb-2 text-[var(--ts)]">热度榜</div>
             <div>
               {[
-                { tag: '热', tagC: 'bg-[#FFF1F0] text-[var(--er)]', title: '6月宏观经济运行分析报告', team: '宏观团队', date: '06-24' },
-                { tag: '热', tagC: 'bg-[#FFF1F0] text-[var(--er)]', title: '商品期货市场季度策略展望', team: '策略团队', date: '06-23' },
-                { tag: '新', tagC: 'bg-[#E6F0FF] text-[var(--p)]', title: '股指期货多因子模型最新研究成果', team: '金工团队', date: '06-22' }
+                { tag: '热', tagC: 'bg-[#FFF1F0] text-[var(--er)]', title: '6月宏观经济运行分析报告', team: '宏观团队', date: '06-24', access: 'none' as const },
+                { tag: '热', tagC: 'bg-[#FFF1F0] text-[var(--er)]', title: '商品期货市场季度策略展望', team: '策略团队', date: '06-23', access: 'institution' as const },
+                { tag: '新', tagC: 'bg-[#E6F0FF] text-[var(--p)]', title: '股指期货多因子模型最新研究成果', team: '金工团队', date: '06-22', access: 'institution' as const }
               ].map((r, i) => (
                 <button
                   key={i}
-                  onClick={() => onOpenProtectedContent({ kind: '研报', title: r.title })}
+                  onClick={() => onOpenProtectedContent({ kind: '研报', title: r.title, access: r.access })}
                   className={`flex w-full items-start gap-2 py-2 text-left transition-colors hover:bg-[var(--pll)] ${i > 0 ? 'border-t border-[var(--bl)]' : ''}`}
                 >
                   <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${r.tagC}`}>{r.tag}</span>

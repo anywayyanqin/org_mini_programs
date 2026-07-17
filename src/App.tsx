@@ -6,7 +6,7 @@ import LoginModal from './components/LoginModal';
 import RoleSelectorModal from './components/RoleSelectorModal';
 import MyPage from './components/MyPage';
 import MessageCenterModal from './components/MessageCenterModal';
-import { ContentAccessPrompt, ContentPreview, type ProtectedContent } from './components/ProtectedContentModals';
+import { ContentAccessPrompt, ContentPreview, NoContentAccessPrompt, type ProtectedContent } from './components/ProtectedContentModals';
 
 export default function App() {
   const isMissingProfileDemo = new URLSearchParams(window.location.search).get('profile') === 'missing';
@@ -53,7 +53,7 @@ export default function App() {
       return;
     }
 
-    if (userRole !== '机构身份') {
+    if (content.access === 'none' || userRole !== '机构身份') {
       setPendingContent(content);
       return;
     }
@@ -322,7 +322,7 @@ export default function App() {
             setIsLoggedIn(true);
             setShowLoginModal(false);
             if (pendingContent) {
-              if (userRole === '机构身份') {
+              if (userRole === '机构身份' && pendingContent.access !== 'none') {
                 setOpenedContent(pendingContent);
                 setPendingContent(null);
               }
@@ -335,7 +335,7 @@ export default function App() {
         />
       )}
 
-      {pendingContent && isLoggedIn && userRole !== '机构身份' && (
+      {pendingContent && isLoggedIn && pendingContent.access !== 'none' && userRole !== '机构身份' && (
         <ContentAccessPrompt
           content={pendingContent}
           onClose={() => setPendingContent(null)}
@@ -344,6 +344,13 @@ export default function App() {
             setOpenedContent(pendingContent);
             setPendingContent(null);
           }}
+        />
+      )}
+
+      {pendingContent && isLoggedIn && pendingContent.access === 'none' && (
+        <NoContentAccessPrompt
+          content={pendingContent}
+          onClose={() => setPendingContent(null)}
         />
       )}
 

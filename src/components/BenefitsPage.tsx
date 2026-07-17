@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight, ChevronDown, Share2, AlertCircle, FileText } from 'lucide-react';
+import { ArrowLeft, ChevronDown, Share2, AlertCircle, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface BenefitsPageProps {
@@ -195,7 +195,7 @@ export default function BenefitsPage({ onBack }: BenefitsPageProps) {
               <button
                 type="button"
                 onClick={() => setPreviewItem(item)}
-                className="group flex items-start w-full text-left rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2B65D9]/40"
+                className="flex items-start w-full text-left rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2B65D9]/40"
                 aria-label={`查看${item.title}内容`}
               >
                 <div className="flex items-start gap-3 flex-1 min-w-0">
@@ -216,10 +216,6 @@ export default function BenefitsPage({ onBack }: BenefitsPageProps) {
                     </div>
                   </div>
                 </div>
-
-                <span className="ml-3 mt-1 w-8 h-8 rounded-full bg-[#F7F9FC] text-slate-400 flex items-center justify-center shrink-0 transition-all group-hover:bg-[#EDF3FF] group-hover:text-[#2B65D9] group-hover:translate-x-0.5">
-                  <ArrowRight size={16} />
-                </span>
               </button>
 
               <button
