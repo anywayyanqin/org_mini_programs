@@ -4,6 +4,7 @@ import { futuresData } from './data';
 import HomePage from './components/HomePage';
 import LoginModal from './components/LoginModal';
 import RoleSelectorModal from './components/RoleSelectorModal';
+import MultiPlatformAccountPrompt from './components/MultiPlatformAccountPrompt';
 import MyPage from './components/MyPage';
 import MessageCenterModal from './components/MessageCenterModal';
 import { ContentAccessPrompt, ContentPreview, NoContentAccessPrompt, type ProtectedContent } from './components/ProtectedContentModals';
@@ -13,10 +14,15 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState('机构身份');
   const [showRoleModal, setShowRoleModal] = useState(false);
+  const [roleModalMode, setRoleModalMode] = useState<'entry' | 'switch'>('switch');
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [pendingContent, setPendingContent] = useState<ProtectedContent | null>(null);
   const [openedContent, setOpenedContent] = useState<ProtectedContent | null>(null);
+  const [showMultiPlatformModal, setShowMultiPlatformModal] = useState(false);
+  const [pendingRoleSelection, setPendingRoleSelection] = useState<string | null>(null);
+  const [hasLinkedMultiPlatformAccount, setHasLinkedMultiPlatformAccount] = useState(false);
+  const retailIdentityHasAppAccount = true;
   
   const getUserDisplayName = () => {
     if (!isLoggedIn) return '游客';
@@ -37,10 +43,45 @@ export default function App() {
 
   const isCurrentIdentitySigned = isLoggedIn && userRole === '机构身份' && !isMissingProfileDemo;
 
+  const canOpenContentWithRole = (content: ProtectedContent, role: string) => {
+    if (content.access === 'none') return false;
+    if (content.access === 'institution') return role === '机构身份';
+    return role === '机构身份';
+  };
+
+  const resolvePendingContentByRole = (role: string) => {
+    if (!pendingContent) return;
+
+    if (canOpenContentWithRole(pendingContent, role)) {
+      setOpenedContent(pendingContent);
+      setPendingContent(null);
+      return;
+    }
+  };
+
+  const commitRoleSelection = (role: string) => {
+    setUserRole(role);
+    setShowRoleModal(false);
+    if (pendingContent) {
+      resolvePendingContentByRole(role);
+    }
+  };
+
+  const handleRoleSelection = (role: string) => {
+    if (role === '零售身份' && retailIdentityHasAppAccount && !hasLinkedMultiPlatformAccount) {
+      setPendingRoleSelection(role);
+      setShowRoleModal(false);
+      setShowMultiPlatformModal(true);
+      return;
+    }
+    commitRoleSelection(role);
+  };
+
   const handleUserClick = () => {
     if (!isLoggedIn) {
       setShowLoginModal(true);
     } else {
+      setRoleModalMode('switch');
       setShowRoleModal(true);
     }
 
@@ -52,13 +93,9 @@ export default function App() {
       setShowLoginModal(true);
       return;
     }
-
-    if (content.access === 'none' || userRole !== '机构身份') {
-      setPendingContent(content);
-      return;
-    }
-
-    setOpenedContent(content);
+    setPendingContent(content);
+    setRoleModalMode('entry');
+    setShowRoleModal(true);
   };
 
   const renderAvatar = (size: 'small' | 'large') => {
@@ -306,7 +343,8 @@ export default function App() {
       {showRoleModal && (
         <RoleSelectorModal 
           currentRole={userRole} 
-          onSelectRole={setUserRole} 
+          mode={roleModalMode}
+          onSelectRole={handleRoleSelection} 
           onClose={() => setShowRoleModal(false)} 
           onLogout={() => {
             setIsLoggedIn(false);
@@ -321,12 +359,8 @@ export default function App() {
           onLogin={() => {
             setIsLoggedIn(true);
             setShowLoginModal(false);
-            if (pendingContent) {
-              if (userRole === '机构身份' && pendingContent.access !== 'none') {
-                setOpenedContent(pendingContent);
-                setPendingContent(null);
-              }
-            }
+            setRoleModalMode('entry');
+            setShowRoleModal(true);
           }}
           onClose={() => {
             setShowLoginModal(false);
@@ -335,7 +369,31 @@ export default function App() {
         />
       )}
 
-      {pendingContent && isLoggedIn && pendingContent.access !== 'none' && userRole !== '机构身份' && (
+      {showMultiPlatformModal && (
+        <MultiPlatformAccountPrompt
+          onClose={() => {
+            setShowMultiPlatformModal(false);
+            setPendingRoleSelection(null);
+          }}
+          onBind={() => {
+            setHasLinkedMultiPlatformAccount(true);
+            setShowMultiPlatformModal(false);
+            if (pendingRoleSelection) {
+              commitRoleSelection(pendingRoleSelection);
+              setPendingRoleSelection(null);
+            }
+          }}
+          onSkip={() => {
+            setShowMultiPlatformModal(false);
+            if (pendingRoleSelection) {
+              commitRoleSelection(pendingRoleSelection);
+              setPendingRoleSelection(null);
+            }
+          }}
+        />
+      )}
+
+      {pendingContent && isLoggedIn && pendingContent.access !== 'none' && !canOpenContentWithRole(pendingContent, userRole) && (
         <ContentAccessPrompt
           content={pendingContent}
           onClose={() => setPendingContent(null)}

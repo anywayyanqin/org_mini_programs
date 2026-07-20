@@ -166,10 +166,10 @@ export default function MessageCenterModal({ onClose }: MessageCenterModalProps)
     triggerToast('已全部标记为已读');
   };
 
-  // Mark a specific category's messages as read
-  const markCategoryAsRead = (cat: MessageItem['category']) => {
+  // 进入分类即视为已读，不再提供额外的“全部已读”操作。
+  const enterCategory = (cat: MessageItem['category']) => {
     setMessages(prev => prev.map(m => m.category === cat ? { ...m, read: true } : m));
-    triggerToast('该分类消息已全部标为已读');
+    setActiveCategory(cat);
   };
 
   // Get unread count for a specific category
@@ -233,14 +233,6 @@ export default function MessageCenterModal({ onClose }: MessageCenterModalProps)
                 title="一键已读"
               >
                 <CheckCheck size={18} />
-              </button>
-            )}
-            {activeCategory && (
-              <button 
-                onClick={() => markCategoryAsRead(activeCategory)}
-                className="text-[12px] text-[#2B65D9] font-semibold hover:bg-blue-50 px-2.5 py-1.5 rounded-lg transition-colors"
-              >
-                全部已读
               </button>
             )}
             <div className="w-[1px] h-4 bg-gray-200 mx-1"></div>
@@ -345,7 +337,7 @@ export default function MessageCenterModal({ onClose }: MessageCenterModalProps)
                       return (
                         <div 
                           key={cat.key}
-                          onClick={() => setActiveCategory(cat.key)}
+                          onClick={() => enterCategory(cat.key)}
                           className={`flex items-center gap-3.5 px-4.5 py-3.5 hover:bg-slate-50 active:bg-slate-100 cursor-pointer transition-colors relative ${idx !== categories.length - 1 ? 'border-b border-gray-100/60' : ''}`}
                         >
                           {/* Left circular colorful icon */}

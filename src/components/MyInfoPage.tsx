@@ -50,7 +50,7 @@ export default function MyInfoPage({ onBack, userRole, isProfileIncomplete = fal
           <div className="px-4">
             <div className="flex justify-between items-center py-4 border-b border-[#F0F0F0]">
               <span className="text-[14px] text-[#333]">姓名</span>
-              <span className="text-[14px] text-[#999]">{isProfileIncomplete ? '未填写' : '王**'}</span>
+              <span className="text-[14px] text-[#999]">{isProfileIncomplete ? '未填写' : '王燕勤'}</span>
             </div>
             <div className="flex justify-between items-center py-4 border-b border-[#F0F0F0]">
               <span className="text-[14px] text-[#333]">手机号</span>

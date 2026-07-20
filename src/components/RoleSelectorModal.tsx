@@ -1,36 +1,54 @@
 import React from 'react';
-import { X, Check, UserCircle, LogOut } from 'lucide-react';
+import { X, Check, LogOut, ChevronRight } from 'lucide-react';
 
 interface RoleSelectorModalProps {
   currentRole: string;
   onSelectRole: (role: string) => void;
   onClose: () => void;
   onLogout: () => void;
+  mode?: 'entry' | 'switch';
 }
 
-export default function RoleSelectorModal({ currentRole, onSelectRole, onClose, onLogout }: RoleSelectorModalProps) {
+export default function RoleSelectorModal({
+  currentRole,
+  onSelectRole,
+  onClose,
+  onLogout,
+  mode = 'switch',
+}: RoleSelectorModalProps) {
   const roles = [
-    { id: '机构身份', name: '国泰君安期货有限公司', subText: '王燕勤', signed: true },
-    { id: '零售身份', name: '国泰海通证券有限公司', subText: '王燕勤', signed: false }
+    { id: '机构身份', name: '国泰君安期货有限公司', subText: '王燕勤', signed: true, badge: '国泰' },
+    { id: '零售身份', name: '用户SZHYd6U', subText: '', signed: false, badge: '缺省图' }
   ];
 
   return (
-    <div className="fixed inset-0 bg-black/45 z-[10000] flex items-end md:items-center justify-center md:p-4 animate-[rpFadeIn_0.2s]">
-      <div className="bg-[var(--bc)] w-full max-w-[400px] rounded-t-2xl md:rounded-2xl shadow-xl overflow-hidden flex flex-col animate-[slideUp_0.24s_ease-out] md:animate-none pb-[env(safe-area-inset-bottom)]">
-        <div className="p-5 border-b border-[var(--bl)] flex items-center justify-between">
-          <div>
-            <h2 className="text-[16px] font-bold text-[var(--tm)]">切换身份</h2>
-            <p className="text-[12px] text-[var(--tt)] mt-1">切换后将展示对应身份的服务与权益</p>
-          </div>
-          <button 
+    <div className="fixed inset-0 z-[10000] flex items-end justify-center bg-black/45 md:items-center md:p-4 animate-[rpFadeIn_0.2s]">
+      <div className="flex h-[100dvh] w-full flex-col overflow-hidden bg-[var(--bb)] shadow-xl md:h-auto md:max-h-[760px] md:max-w-[430px] md:rounded-3xl md:bg-[var(--bc)] animate-[slideUp_0.24s_ease-out] md:animate-none pb-[env(safe-area-inset-bottom)]">
+        <div className="flex h-[56px] shrink-0 items-center justify-between border-b border-[var(--bl)] bg-[var(--bc)] px-4 md:px-5">
+          <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--bh)] text-[var(--tt)] hover:text-[var(--tm)] transition-colors"
+            aria-label="关闭"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--tt)] hover:bg-[var(--bh)]"
           >
             <X size={20} />
           </button>
+          <h2 className="text-[18px] font-bold text-[var(--tm)]">
+            {mode === 'entry' ? '您可进入以下企业' : '选择身份'}
+          </h2>
+          <div className="h-8 w-8" aria-hidden="true" />
         </div>
-        
-        <div className="p-4 space-y-3">
+
+        <div className="flex-1 overflow-auto bg-[var(--bb)] px-4 py-4 md:px-5">
+          {mode === 'entry' ? (
+            <div className="h-2" aria-hidden="true" />
+          ) : (
+            <div className="mb-4 rounded-2xl bg-[var(--bc)] px-4 py-4 shadow-sm border border-[var(--bl)]">
+              <p className="text-[16px] font-bold text-[var(--tm)]">切换身份</p>
+              <p className="mt-1 text-[12px] text-[var(--tt)]">切换后将展示对应身份的服务与权益</p>
+            </div>
+          )}
+
+          <div className="space-y-3">
           {roles.map(role => {
             const isActive = currentRole === role.id;
             return (
@@ -40,48 +58,53 @@ export default function RoleSelectorModal({ currentRole, onSelectRole, onClose, 
                   onSelectRole(role.id);
                   onClose();
                 }}
-                className={`w-full flex items-center p-4 rounded-xl border-2 text-left transition-all ${
-                  isActive 
-                    ? 'border-[var(--p)] bg-[var(--pl)] shadow-sm' 
-                    : 'border-[var(--bl)] bg-[var(--bc)] hover:border-[var(--p)] hover:bg-[var(--pll)]'
+                className={`w-full flex items-center gap-3 rounded-2xl border p-4 text-left transition-all ${
+                  isActive
+                    ? 'border-[var(--p)] bg-[var(--pll)] shadow-sm'
+                    : 'border-[var(--bl)] bg-[#efefef] hover:border-[var(--p)] hover:bg-[var(--pll)]'
                 }`}
               >
-                <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 mr-3 text-white font-bold text-[14px] tracking-tight bg-[#F5A623]">
-                  国泰
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-2 border-[var(--p)] bg-white text-[13px] font-bold text-[var(--tm)]">
+                  {role.badge}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className={`text-[14px] font-bold truncate max-w-[140px] ${isActive ? 'text-[var(--p)]' : 'text-[var(--tm)]'}`}>
+                  <div className="flex items-center gap-2">
+                    <span className={`max-w-[180px] truncate text-[18px] font-bold ${isActive ? 'text-[var(--p)]' : 'text-[var(--tm)]'}`}>
                       {role.name}
                     </span>
                     {role.signed && (
-                      <div className="flex items-center text-[#B25F2A] text-[10px] rounded overflow-hidden leading-none shrink-0 h-[18px]">
-                        <span className="bg-[#EFCFB2] px-1.5 h-full flex items-center font-medium">企</span>
-                        <span className="bg-[#FCE6D3] px-1.5 h-full flex items-center">已签约</span>
+                      <div className="flex h-[20px] items-center overflow-hidden rounded text-[10px] leading-none text-[#B25F2A]">
+                        <span className="flex h-full items-center bg-[#EFCFB2] px-1.5 font-medium">企</span>
+                        <span className="flex h-full items-center bg-[#FCE6D3] px-1.5">已签约</span>
                       </div>
                     )}
                   </div>
-                  <div className="text-[12px] text-[var(--tt)]">
+                  <div className="mt-1 text-[14px] font-bold text-[var(--tm)]">
                     {role.subText}
                   </div>
                 </div>
-                {isActive && (
-                  <Check size={20} className="text-[#3b82f6] shrink-0 ml-3" />
+                {isActive ? (
+                  <Check size={20} className="shrink-0 text-[#3b82f6]" />
+                ) : (
+                  <ChevronRight size={22} className="shrink-0 text-[var(--tt)]" />
                 )}
               </button>
             );
           })}
         </div>
-
-        <div className="p-4 border-t border-[var(--bl)] bg-[var(--bb)]">
-          <button 
-            onClick={onLogout}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-white border border-[var(--bl)] text-[var(--er)] font-medium hover:bg-[#FFF1F0] hover:border-[var(--er)] transition-colors shadow-sm"
-          >
-            <LogOut size={18} />
-            退出登录
-          </button>
         </div>
+
+        {mode === 'switch' && (
+          <div className="border-t border-[var(--bl)] bg-[var(--bb)] p-4">
+            <button
+              onClick={onLogout}
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--bl)] bg-white py-3 font-medium text-[var(--er)] shadow-sm transition-colors hover:border-[var(--er)] hover:bg-[#FFF1F0]"
+            >
+              <LogOut size={18} />
+              退出登录
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

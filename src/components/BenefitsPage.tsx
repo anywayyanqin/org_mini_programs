@@ -251,9 +251,11 @@ export default function BenefitsPage({ onBack }: BenefitsPageProps) {
                       <div className="flex items-start gap-2">
                         <div className="w-1.5 h-1.5 bg-[#2B65D9] rounded-full shrink-0 mt-1.5"></div>
                         <div className="flex-1 flex justify-between items-end gap-4 text-[13px] text-slate-700 leading-relaxed">
-                          <div className="flex-1">
-                            {item.details || '暂无详细概览数据'}
-                          </div>
+                          {item.details ? (
+                            <div className="flex-1">
+                              {item.details}
+                            </div>
+                          ) : null}
                           <div className="shrink-0 flex flex-col items-end gap-2">
                             {item.remainingDays !== undefined && (
                               <div className="whitespace-nowrap text-slate-500">
