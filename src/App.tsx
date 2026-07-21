@@ -19,6 +19,7 @@ export default function App() {
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [pendingContent, setPendingContent] = useState<ProtectedContent | null>(null);
   const [openedContent, setOpenedContent] = useState<ProtectedContent | null>(null);
+  const [hasEnteredIdentity, setHasEnteredIdentity] = useState(false);
   const [showMultiPlatformModal, setShowMultiPlatformModal] = useState(false);
   const [pendingRoleSelection, setPendingRoleSelection] = useState<string | null>(null);
   const [hasLinkedMultiPlatformAccount, setHasLinkedMultiPlatformAccount] = useState(false);
@@ -61,6 +62,7 @@ export default function App() {
 
   const commitRoleSelection = (role: string) => {
     setUserRole(role);
+    setHasEnteredIdentity(true);
     setShowRoleModal(false);
     if (pendingContent) {
       resolvePendingContentByRole(role);
@@ -93,9 +95,18 @@ export default function App() {
       setShowLoginModal(true);
       return;
     }
+
+    if (!hasEnteredIdentity) {
+      setPendingContent(content);
+      return;
+    }
+
+    if (canOpenContentWithRole(content, userRole)) {
+      setOpenedContent(content);
+      return;
+    }
+
     setPendingContent(content);
-    setRoleModalMode('entry');
-    setShowRoleModal(true);
   };
 
   const renderAvatar = (size: 'small' | 'large') => {
@@ -286,7 +297,10 @@ export default function App() {
               getRoleDisplayName={getRoleDisplayName}
               renderAvatar={renderAvatar}
               onLoginClick={() => setShowLoginModal(true)}
-              onSwitchRole={() => setShowRoleModal(true)}
+              onSwitchRole={() => {
+                setRoleModalMode('switch');
+                setShowRoleModal(true);
+              }}
               isProfileIncomplete={isMissingProfileDemo}
             />
           )}
@@ -348,6 +362,7 @@ export default function App() {
           onClose={() => setShowRoleModal(false)} 
           onLogout={() => {
             setIsLoggedIn(false);
+            setHasEnteredIdentity(false);
             setShowRoleModal(false);
           }}
         />
@@ -358,6 +373,7 @@ export default function App() {
         <LoginModal 
           onLogin={() => {
             setIsLoggedIn(true);
+            setHasEnteredIdentity(false);
             setShowLoginModal(false);
             setRoleModalMode('entry');
             setShowRoleModal(true);
@@ -393,19 +409,20 @@ export default function App() {
         />
       )}
 
-      {pendingContent && isLoggedIn && pendingContent.access !== 'none' && !canOpenContentWithRole(pendingContent, userRole) && (
+      {pendingContent && isLoggedIn && hasEnteredIdentity && pendingContent.access !== 'none' && !canOpenContentWithRole(pendingContent, userRole) && (
         <ContentAccessPrompt
           content={pendingContent}
           onClose={() => setPendingContent(null)}
           onSwitchAndOpen={() => {
             setUserRole('机构身份');
+            setHasEnteredIdentity(true);
             setOpenedContent(pendingContent);
             setPendingContent(null);
           }}
         />
       )}
 
-      {pendingContent && isLoggedIn && pendingContent.access === 'none' && (
+      {pendingContent && isLoggedIn && hasEnteredIdentity && pendingContent.access === 'none' && (
         <NoContentAccessPrompt
           content={pendingContent}
           onClose={() => setPendingContent(null)}
